@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nextstop Book — Vos livres méritent une seconde vie</title>
+  <meta name="description" content="Nextstop Book collecte, trie et redistribue vos livres lors de vos moments de transition. Don aux écoles, revente, recyclage responsable." />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- Progress bar -->
+<div id="progress-bar"></div>
+
+<!-- ══════════════════ NAV ══════════════════ -->
+<nav id="main-nav" role="navigation" aria-label="Navigation principale">
+  <div class="container">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <svg width="46" height="42" viewBox="0 0 58 54" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><path d="M29 7C25 3 11 2 4 6L4 48C11 44 25 45 29 49" stroke="#f5f0e8" stroke-width="1.8" fill="none" stroke-linecap="round"/><path d="M29 7C33 3 47 2 54 6L54 48C47 44 33 45 29 49" stroke="#c1440e" stroke-width="1.8" fill="none" stroke-linecap="round"/><line x1="11" y1="18" x2="25" y2="18" stroke="#f5f0e8" stroke-width="1" opacity="0.35"/><line x1="11" y1="25" x2="25" y2="25" stroke="#f5f0e8" stroke-width="1" opacity="0.35"/><line x1="11" y1="32" x2="25" y2="32" stroke="#f5f0e8" stroke-width="1" opacity="0.35"/><line x1="33" y1="18" x2="47" y2="18" stroke="#c1440e" stroke-width="1" opacity="0.5"/><line x1="33" y1="25" x2="47" y2="25" stroke="#c1440e" stroke-width="1" opacity="0.5"/><line x1="33" y1="32" x2="47" y2="32" stroke="#c1440e" stroke-width="1" opacity="0.5"/><line x1="29" y1="7" x2="29" y2="49" stroke="#f5f0e8" stroke-width="1" opacity="0.18"/></svg>
+        <div><div style="font-family:'Playfair Display',Georgia,serif;font-size:23px;font-weight:700;color:#f5f0e8;line-height:1;letter-spacing:-0.01em;">Next<em style="font-style:italic;color:#c1440e;">stop</em></div><div style="display:flex;align-items:center;gap:7px;margin-top:6px;"><div style="height:1px;width:16px;background:rgba(245,240,232,0.25);"></div><div style="font-size:8px;letter-spacing:0.5em;text-transform:uppercase;color:rgba(245,240,232,0.45);">Book · ASBL</div></div></div>
+      </a>
+      <ul class="nav-links" role="list">
+        <li><a href="#how">Comment ça marche</a></li>
+        <li><a href="#why">Pourquoi nous</a></li>
+        <li><a href="#impact">Notre impact</a></li>
+        <li><a href="certificat.html">Mon Certificat</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="precommande.html" class="btn btn-outline">Précommander</a>
+      </div>
+      <button class="nav-burger" id="nav-burger" aria-expanded="false" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile menu -->
+<div id="mobile-menu" role="dialog" aria-label="Menu mobile">
+  <a href="#how">Comment ça marche</a>
+  <a href="#why">Pourquoi nous</a>
+  <a href="#impact">Notre impact</a>
+  <a href="certificat.html">Mon Certificat</a>
+  <a href="precommande.html" class="btn btn-accent">Précommander le service →</a>
+</div>
+
+<!-- ══════════════════ HERO ══════════════════ -->
+<section class="hero" id="home" aria-label="Accroche principale">
+  <div class="hero-particles" aria-hidden="true">
+
+  <!-- ── Pages de livre ── -->
+  <span class="particle" style="left:4%;bottom:-5%;width:13px;animation:float-b 37s -6s linear infinite;">
+    <svg viewBox="0 0 12 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.5 1h6.5l2.5 2.5V14H1.5z" stroke="white" stroke-width="0.9" stroke-linecap="round"/><path d="M8 1v2.5h2.5" stroke="white" stroke-width="0.9" stroke-linecap="round"/><line x1="3" y1="6" x2="9" y2="6" stroke="white" stroke-width="0.55" opacity="0.7"/><line x1="3" y1="8.2" x2="9" y2="8.2" stroke="white" stroke-width="0.55" opacity="0.7"/><line x1="3" y1="10.4" x2="7" y2="10.4" stroke="white" stroke-width="0.55" opacity="0.7"/></svg>
+  </span>
+  <span class="particle" style="left:22%;bottom:8%;width:10px;animation:float-a 42s -18s linear infinite;">
+    <svg viewBox="0 0 12 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.5 1h6.5l2.5 2.5V14H1.5z" stroke="white" stroke-width="0.9" stroke-linecap="round"/><path d="M8 1v2.5h2.5" stroke="white" stroke-width="0.9" stroke-linecap="round"/><line x1="3" y1="6" x2="9" y2="6" stroke="white" stroke-width="0.55" opacity="0.7"/><line x1="3" y1="8.2" x2="9" y2="8.2" stroke="white" stroke-width="0.55" opacity="0.7"/><line x1="3" y1="10.4" x2="7" y2="10.4" stroke="white" stroke-width="0.55" opacity="0.7"/></svg>
+  </span>
+  <span class="particle" style="left:48%;bottom:-8%;width:16px;animation:float-c 44s -3s linear infinite;">
+    <svg viewBox="0 0 12 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.5 1h6.5l2.5 2.5V14H1.5z" stroke="white" stroke-width="0.9" stroke-linecap="round"/><path d="M8 1v2.5h2.5" stroke="white" stroke-width="0.9" stroke-linecap="round"/><line x1="3" y1="6" x2="9" y2="6" stroke="white" stroke-width="0.55" opacity="0.7"/><line x1="3" y1="8.2" x2="9" y2="8.2" stroke="white" stroke-width="0.55" opacity="0.7"/><line x1="3" y1="10.4" x2="7" y2="10.4" stroke="white" stroke-width="0.55" opacity="0.7"/></svg>
+  </span>
+  <span class="particle" style="left:71%;bottom:15%;width:12px;animation:float-a 35s -25s linear infinite;">
+    <svg viewBox="0 0 12 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.5 1h6.5l2.5 2.5V14H1.5z" stroke="white" stroke-width="0.9" stroke-linecap="round"/><path d="M8 1v2.5h2.5" stroke="white" stroke-width="0.9" stroke-linecap="round"/><line x1="3" y1="6" x2="9" y2="6" stroke="white" stroke-width="0.55" opacity="0.7"/><line x1="3" y1="8.2" x2="9" y2="8.2" stroke="white" stroke-width="0.55" opacity="0.7"/><line x1="3" y1="10.4" x2="7" y2="10.4" stroke="white" stroke-width="0.55" opacity="0.7"/></svg>
+  </span>
+  <span class="particle" style="left:88%;bottom:-3%;width:11px;animation:float-b 39s -12s linear infinite;">
+    <svg viewBox="0 0 12 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.5 1h6.5l2.5 2.5V14H1.5z" stroke="white" stroke-width="0.9" stroke-linecap="round"/><path d="M8 1v2.5h2.5" stroke="white" stroke-width="0.9" stroke-linecap="round"/><line x1="3" y1="6" x2="9" y2="6" stroke="white" stroke-width="0.55" opacity="0.7"/><line x1="3" y1="8.2" x2="9" y2="8.2" stroke="white" stroke-width="0.55" opacity="0.7"/><line x1="3" y1="10.4" x2="7" y2="10.4" stroke="white" stroke-width="0.55" opacity="0.7"/></svg>
+  </span>
+
+  <!-- ── Livres ouverts ── -->
+  <span class="particle" style="left:13%;bottom:25%;width:18px;animation:float-c 48s -33s linear infinite;">
+    <svg viewBox="0 0 18 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 4C7 2 3 2 1 3v8c2-1 6-1 8 1" stroke="white" stroke-width="0.9" stroke-linecap="round"/><path d="M9 4c2-2 6-2 8-1v8c-2-1-6-1-8 1" stroke="white" stroke-width="0.9" stroke-linecap="round"/><line x1="9" y1="4" x2="9" y2="12" stroke="white" stroke-width="0.6" opacity="0.5"/></svg>
+  </span>
+  <span class="particle" style="left:34%;bottom:-2%;width:15px;animation:float-b 41s -9s linear infinite;">
+    <svg viewBox="0 0 18 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 4C7 2 3 2 1 3v8c2-1 6-1 8 1" stroke="white" stroke-width="0.9" stroke-linecap="round"/><path d="M9 4c2-2 6-2 8-1v8c-2-1-6-1-8 1" stroke="white" stroke-width="0.9" stroke-linecap="round"/><line x1="9" y1="4" x2="9" y2="12" stroke="white" stroke-width="0.6" opacity="0.5"/></svg>
+  </span>
+  <span class="particle" style="left:58%;bottom:30%;width:20px;animation:float-a 46s -21s linear infinite;">
+    <svg viewBox="0 0 18 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 4C7 2 3 2 1 3v8c2-1 6-1 8 1" stroke="white" stroke-width="0.9" stroke-linecap="round"/><path d="M9 4c2-2 6-2 8-1v8c-2-1-6-1-8 1" stroke="white" stroke-width="0.9" stroke-linecap="round"/><line x1="9" y1="4" x2="9" y2="12" stroke="white" stroke-width="0.6" opacity="0.5"/></svg>
+  </span>
+  <span class="particle" style="left:79%;bottom:5%;width:14px;animation:float-c 36s -16s linear infinite;">
+    <svg viewBox="0 0 18 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 4C7 2 3 2 1 3v8c2-1 6-1 8 1" stroke="white" stroke-width="0.9" stroke-linecap="round"/><path d="M9 4c2-2 6-2 8-1v8c-2-1-6-1-8 1" stroke="white" stroke-width="0.9" stroke-linecap="round"/><line x1="9" y1="4" x2="9" y2="12" stroke="white" stroke-width="0.6" opacity="0.5"/></svg>
+  </span>
+  <span class="particle" style="left:93%;bottom:40%;width:17px;animation:float-b 43s -28s linear infinite;">
+    <svg viewBox="0 0 18 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 4C7 2 3 2 1 3v8c2-1 6-1 8 1" stroke="white" stroke-width="0.9" stroke-linecap="round"/><path d="M9 4c2-2 6-2 8-1v8c-2-1-6-1-8 1" stroke="white" stroke-width="0.9" stroke-linecap="round"/><line x1="9" y1="4" x2="9" y2="12" stroke="white" stroke-width="0.6" opacity="0.5"/></svg>
+  </span>
+
+  <!-- ── Marque-pages ── -->
+  <span class="particle" style="left:8%;bottom:35%;width:8px;animation:float-a 33s -14s linear infinite;">
+    <svg viewBox="0 0 8 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1h6v11l-3-2.5-3 2.5z" stroke="white" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </span>
+  <span class="particle" style="left:28%;bottom:48%;width:7px;animation:float-c 40s -22s linear infinite;">
+    <svg viewBox="0 0 8 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1h6v11l-3-2.5-3 2.5z" stroke="white" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </span>
+  <span class="particle" style="left:43%;bottom:18%;width:9px;animation:float-b 38s -5s linear infinite;">
+    <svg viewBox="0 0 8 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1h6v11l-3-2.5-3 2.5z" stroke="white" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </span>
+  <span class="particle" style="left:64%;bottom:-4%;width:8px;animation:float-a 44s -31s linear infinite;">
+    <svg viewBox="0 0 8 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1h6v11l-3-2.5-3 2.5z" stroke="white" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </span>
+  <span class="particle" style="left:83%;bottom:22%;width:10px;animation:float-c 31s -10s linear infinite;">
+    <svg viewBox="0 0 8 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1h6v11l-3-2.5-3 2.5z" stroke="white" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </span>
+  <span class="particle" style="left:52%;bottom:55%;width:7px;animation:float-b 45s -38s linear infinite;">
+    <svg viewBox="0 0 8 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1h6v11l-3-2.5-3 2.5z" stroke="white" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </span>
+
+</div>
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-content">
+        <p class="hero-eyebrow">ASBL · Économie circulaire · Bruxelles</p>
+        <h1>
+          Vos livres méritent<br>
+          une <em>seconde vie</em>
+        </h1>
+        <p class="hero-desc">
+          Nextstop Book ASBL est née d'un constat simple : chaque année, des milliers de livres finissent à la benne lors des déménagements, des successions ou des entrées en maison de repos. Nous venons les chercher chez vous, nous les trions, et nous les redistribuons via nos associations partenaires vers les écoles qui en ont besoin. Ce qui reste est recyclé de façon responsable. Un certificat d'impact personnalisé vous attend après chaque collecte.
+        </p>
+        <div class="hero-actions">
+          <a href="precommande.html" class="btn btn-accent btn-lg">
+            📦 Précommander le service
+          </a>
+          <a href="#how" class="btn btn-outline btn-lg">
+            Comment ça marche →
+          </a>
+        </div>
+        <div class="hero-trust">
+          <span class="hero-trust-item">Tous vos livres acceptés</span>
+          <span class="hero-trust-item">Certificat d'impact inclus</span>
+          <span class="hero-trust-item">Réponse sous 48h</span>
+        </div>
+      </div>
+
+      <div class="hero-panel" aria-hidden="true">
+        <div class="hero-panel-card">
+          <div class="card-icon">🏠</div>
+          <h4>Un service directement à domicile</h4>
+          <p>On vient chez vous et on prend tout. Aucun tri, aucune négociation livre par livre.</p>
+        </div>
+        <div class="hero-panel-row">
+          <div class="hero-panel-card">
+            <div class="card-icon">📚</div>
+            <h4>Don aux écoles</h4>
+            <p>Via nos associations partenaires, les livres en bon état rejoignent les écoles défavorisées pour que le savoir continue de circuler.</p>
+          </div>
+          <div class="hero-panel-card">
+            <div class="card-icon">♻️</div>
+            <h4>Recyclage</h4>
+            <p>Le reste est recyclé responsablement.</p>
+          </div>
+        </div>
+        <div class="hero-panel-card">
+          <div class="card-icon">📄</div>
+          <h4>Certificat d'impact personnalisé</h4>
+          <p>Téléchargeable après chaque collecte. Vous y retrouverez le CO₂ évité, les livres redistribués et les écoles aidées.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Marquee band -->
+<div class="marquee-band" aria-hidden="true">
+  <div class="marquee-track">
+    <span class="marquee-item">Économie circulaire</span>
+    <span class="marquee-dot">✦</span>
+    <span class="marquee-item">Don aux écoles</span>
+    <span class="marquee-dot">✦</span>
+    <span class="marquee-item">Revente seconde main</span>
+    <span class="marquee-dot">✦</span>
+    <span class="marquee-item">Recyclage papier</span>
+    <span class="marquee-dot">✦</span>
+    <span class="marquee-item">Collecte à domicile</span>
+    <span class="marquee-dot">✦</span>
+    <span class="marquee-item">Certificat d'impact</span>
+    <span class="marquee-dot">✦</span>
+    <span class="marquee-item">ASBL Bruxelles</span>
+    <span class="marquee-dot">✦</span>
+    <!-- duplicate for seamless loop -->
+    <span class="marquee-item">Économie circulaire</span>
+    <span class="marquee-dot">✦</span>
+    <span class="marquee-item">Don aux écoles</span>
+    <span class="marquee-dot">✦</span>
+    <span class="marquee-item">Revente seconde main</span>
+    <span class="marquee-dot">✦</span>
+    <span class="marquee-item">Recyclage papier</span>
+    <span class="marquee-dot">✦</span>
+    <span class="marquee-item">Collecte à domicile</span>
+    <span class="marquee-dot">✦</span>
+    <span class="marquee-item">Certificat d'impact</span>
+    <span class="marquee-dot">✦</span>
+    <span class="marquee-item">ASBL Bruxelles</span>
+    <span class="marquee-dot">✦</span>
+  </div>
+</div>
+
+<!-- ══════════════════ HOW IT WORKS ══════════════════ -->
+<section class="section how" id="how">
+  <div class="container">
+    <div class="text-center">
+      <p class="section-tag" data-reveal>Le processus</p>
+      <h2 class="section-title" data-reveal data-reveal-delay="1">
+        Simple comme un appel de téléphone
+      </h2>
+      <p class="section-subtitle" data-reveal data-reveal-delay="2">
+        Trois étapes, zéro stress. On s'occupe de tout. Vous n'avez qu'à nous ouvrir la porte.
+      </p>
+    </div>
+
+    <div class="steps-grid">
+      <div class="steps-connector" aria-hidden="true"></div>
+
+      <div class="step-card" data-reveal data-reveal-delay="1">
+        <span class="step-icon">📦</span>
+        <div class="step-num">1</div>
+        <h3>Vous nous contactez</h3>
+        <p>Remplissez le formulaire ou appelez-nous. On vous répond sous 48h et on planifie une collecte à domicile à la date qui vous convient.</p>
+      </div>
+
+      <div class="step-card" data-reveal data-reveal-delay="2">
+        <span class="step-icon">📚</span>
+        <div class="step-num">2</div>
+        <h3>On trie intelligemment</h3>
+        <p>Nous prenons <strong>tout le volume</strong>, sans refus ni négociation. Une partie rejoint les écoles via nos associations partenaires, les autres sont revendus ou recyclés responsablement.</p>
+      </div>
+
+      <div class="step-card" data-reveal data-reveal-delay="3">
+        <span class="step-icon">📄</span>
+        <div class="step-num">3</div>
+        <h3>Votre certificat d'impact</h3>
+        <p>Vous recevez un PDF personnalisé : nombre de livres redistribués, CO₂ évité, écoles aidées. Votre geste devient mesurable.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ WHY NEXTSTOP ══════════════════ -->
+<section class="section why" id="why">
+  <div class="container">
+    <div class="text-center">
+      <p class="section-tag" data-reveal>Nos chiffres</p>
+      <h2 class="section-title" data-reveal data-reveal-delay="1">
+        Pourquoi choisir Nextstop Book ?
+      </h2>
+      <p class="section-subtitle" data-reveal data-reveal-delay="2">
+        Issus de notre enquête auprès de 135 personnes en Belgique francophone.
+      </p>
+    </div>
+
+    <div class="why-grid">
+      <div class="why-card" data-reveal data-reveal-delay="1">
+        <div class="why-stat">
+          <span data-counter data-target="40" data-suffix="%">0%</span>
+        </div>
+        <h3>Des gens refusés par les associations</h3>
+        <p>4 personnes sur 10 ont déjà essayé de donner leurs livres et se sont vu refuser. Nous, on dit toujours oui.</p>
+      </div>
+
+      <div class="why-card" data-reveal data-reveal-delay="2">
+        <div class="why-stat">
+          <span data-counter data-target="4.22" data-decimals="2" data-suffix="/5">0/5</span>
+        </div>
+        <h3>Note d'utilité perçue</h3>
+        <p>4,22 sur 5 : c'est la note que les répondants donnent à notre service en termes d'utilité dans leur vie quotidienne.</p>
+      </div>
+
+      <div class="why-card" data-reveal data-reveal-delay="3">
+        <div class="why-stat">
+          <span data-counter data-target="91" data-suffix="%">0%</span>
+        </div>
+        <h3>Des répondants concernés</h3>
+        <p>91% des sondés ont été ou seront un jour confrontés à vider des livres. Notre service répond à un besoin partagé par presque tout le monde.</p>
+      </div>
+    </div>
+    <p class="why-source" data-reveal>Source : enquête interne Nextstop Book, N=135 répondants, FWB 2024–2025</p>
+  </div>
+</section>
+
+<!-- ══════════════════ LIVE IMPACT ══════════════════ -->
+<section class="section impact" id="impact">
+  <div class="container">
+    <div class="text-center">
+      <p class="section-tag" data-reveal>Impact en temps réel</p>
+      <h2 class="section-title" data-reveal data-reveal-delay="1">
+        Chaque collecte compte
+      </h2>
+      <p class="section-subtitle" data-reveal data-reveal-delay="2">
+        Ces chiffres sont mis à jour directement depuis notre base de données.
+      </p>
+      <div class="impact-live-badge" data-reveal data-reveal-delay="3">
+        <span class="live-dot"></span> Données en direct
+      </div>
+    </div>
+
+    <div class="impact-grid">
+      <div class="impact-card" data-reveal data-reveal-delay="1">
+        <span class="impact-icon">📚</span>
+        <div class="impact-num">
+          <span id="stat-livres" data-counter data-target="0">0</span>
+        </div>
+        <div class="impact-label">Livres collectés</div>
+      </div>
+
+      <div class="impact-card" data-reveal data-reveal-delay="2">
+        <span class="impact-icon">♻️</span>
+        <div class="impact-num">
+          <span id="stat-kg" data-counter data-target="0">0</span>
+          <span style="font-size:1.4rem;color:var(--text-light);"> kg</span>
+        </div>
+        <div class="impact-label">Kg de papier sauvés</div>
+      </div>
+
+      <div class="impact-card" data-reveal data-reveal-delay="3">
+        <span class="impact-icon">🤝</span>
+        <div class="impact-num">
+          <span id="stat-ecoles" data-counter data-target="0">0</span>
+        </div>
+        <div class="impact-label">Associations aidées</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ TESTIMONIALS ══════════════════ -->
+<section class="section testimonials" id="testimonials">
+  <div class="container">
+    <div class="text-center">
+      <p class="section-tag" data-reveal>Ils nous font confiance</p>
+      <h2 class="section-title" data-reveal data-reveal-delay="1">Ce qu'ils en pensent</h2>
+    </div>
+
+    <div class="carousel-wrapper" data-reveal>
+      <div class="carousel-track">
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-quote">
+            Bonne idée, quand on voit le nombre de livres neufs dont on ne se sert plus et on ne sait pas à qui les donner. À la Croix-Rouge, ils sont submergés de dons de livres de seconde main. Mais je préfère les donner là que dans une boîte à livres. En tout cas les livres mieux conservés ou avec une charge émotionnelle importante méritent mieux que la poubelle.
+          </p>
+          <div class="testimonial-author">
+            <div class="author-avatar">P</div>
+            <div>
+              <div class="author-name">Personne issue de notre enquête</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-quote">
+            Il y a dans le livre comme dans d'autres secteurs des modes qui dévalorisent certains livres. Une ASBL est une meilleure forme qui ne doit pas être concurrente ni rentable, et qui peut mettre en avant des valeurs positives.
+          </p>
+          <div class="testimonial-author">
+            <div class="author-avatar">P</div>
+            <div>
+              <div class="author-name">Personne issue de notre enquête</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-quote">
+            Ce serait un beau service car je trouve dommage d'avoir autant de difficultés à donner des livres de façon utile. Les livres d'occasion semblent n'avoir plus aucune valeur...
+          </p>
+          <div class="testimonial-author">
+            <div class="author-avatar">P</div>
+            <div>
+              <div class="author-name">Personne issue de notre enquête</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="carousel-controls" aria-label="Navigation carousel">
+      <button class="carousel-btn" id="carousel-prev" aria-label="Précédent">‹</button>
+      <div class="carousel-dots" role="tablist">
+        <button class="carousel-dot active" aria-label="Témoignage 1"></button>
+        <button class="carousel-dot" aria-label="Témoignage 2"></button>
+        <button class="carousel-dot" aria-label="Témoignage 3"></button>
+      </div>
+      <button class="carousel-btn" id="carousel-next" aria-label="Suivant">›</button>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ SDGs ══════════════════ -->
+<section class="sdgs" id="mission">
+  <div class="container">
+    <div class="text-center">
+      <p class="section-tag" data-reveal>Objectifs de développement durable</p>
+      <h2 class="section-title" data-reveal data-reveal-delay="1">
+        Notre mission, alignée avec ce qui compte
+      </h2>
+      <p class="section-subtitle" data-reveal data-reveal-delay="2">
+        Nextstop Book contribue directement à trois ODD des Nations Unies.
+      </p>
+    </div>
+
+    <div class="sdg-grid">
+      <div class="sdg-card sdg-4" data-reveal data-reveal-delay="1">
+        <div class="sdg-bg-num">4</div>
+        <div class="sdg-badge">ODD 4 · Éducation de qualité</div>
+        <h3>Accès équitable à l'éducation</h3>
+        <ul class="sdg-list">
+          <li>Redistribution aux écoles sous-dotées</li>
+          <li>Partenariats avec des projets éducatifs</li>
+          <li>Suivi du nombre de livres donnés aux élèves</li>
+        </ul>
+      </div>
+
+      <div class="sdg-card sdg-12" data-reveal data-reveal-delay="2">
+        <div class="sdg-bg-num">12</div>
+        <div class="sdg-badge">ODD 12 · Consommation responsable</div>
+        <h3>Prolonger la vie des livres</h3>
+        <ul class="sdg-list">
+          <li>Revente en seconde main plutôt que destruction</li>
+          <li>Recyclage papier professionnel</li>
+          <li>Réduction des déchets à la source</li>
+        </ul>
+      </div>
+
+      <div class="sdg-card sdg-13" data-reveal data-reveal-delay="3">
+        <div class="sdg-bg-num">13</div>
+        <div class="sdg-badge">ODD 13 · Action climatique</div>
+        <h3>Réduire l'empreinte carbone</h3>
+        <ul class="sdg-list">
+          <li>1,8 kg CO₂ économisé par livre non pilonné</li>
+          <li>22 500 tonnes de livres pilonnés/an en France</li>
+          <li>Collecte optimisée pour minimiser les trajets</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ CTA BANNER ══════════════════ -->
+<section class="cta-banner">
+  <div class="container">
+    <h2 data-reveal>Vos livres ont une histoire.<br>Aidez-les à en écrire une nouvelle.</h2>
+    <p data-reveal data-reveal-delay="1">Précommandez dès maintenant et soyez parmi les premiers à bénéficier du service Nextstop Book ASBL.</p>
+    <div data-reveal data-reveal-delay="2">
+      <a href="precommande.html" class="btn btn-primary btn-lg">Précommander le service</a>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ FOOTER ══════════════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="footer-logo">
+          <svg width="40" height="37" viewBox="0 0 58 54" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><path d="M29 7C25 3 11 2 4 6L4 48C11 44 25 45 29 49" stroke="#f5f0e8" stroke-width="1.8" fill="none" stroke-linecap="round"/><path d="M29 7C33 3 47 2 54 6L54 48C47 44 33 45 29 49" stroke="#c1440e" stroke-width="1.8" fill="none" stroke-linecap="round"/><line x1="11" y1="18" x2="25" y2="18" stroke="#f5f0e8" stroke-width="1" opacity="0.35"/><line x1="11" y1="25" x2="25" y2="25" stroke="#f5f0e8" stroke-width="1" opacity="0.35"/><line x1="11" y1="32" x2="25" y2="32" stroke="#f5f0e8" stroke-width="1" opacity="0.35"/><line x1="33" y1="18" x2="47" y2="18" stroke="#c1440e" stroke-width="1" opacity="0.5"/><line x1="33" y1="25" x2="47" y2="25" stroke="#c1440e" stroke-width="1" opacity="0.5"/><line x1="33" y1="32" x2="47" y2="32" stroke="#c1440e" stroke-width="1" opacity="0.5"/><line x1="29" y1="7" x2="29" y2="49" stroke="#f5f0e8" stroke-width="1" opacity="0.18"/></svg>
+          <div><div style="font-family:'Playfair Display',Georgia,serif;font-size:24px;font-weight:700;color:#f5f0e8;line-height:1;letter-spacing:-0.01em;">Next<em style="font-style:italic;color:#c1440e;">stop</em></div><div style="display:flex;align-items:center;gap:8px;margin-top:7px;"><div style="height:1px;width:18px;background:rgba(245,240,232,0.22);"></div><div style="font-size:8px;letter-spacing:0.5em;text-transform:uppercase;color:rgba(245,240,232,0.4);">Book · ASBL</div></div></div>
+        </a>
+        <p>Transformons les vidages de livres en actes de transmission durable. Chaque page collectée continue son histoire.</p>
+        <div class="footer-asbl" style="margin-top:20px;">Nextstop Book est une association à but non lucratif engagée pour l'économie circulaire du livre à Bruxelles et en Wallonie.</div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="#home">Accueil</a></li>
+          <li><a href="#how">Comment ça marche</a></li>
+          <li><a href="#impact">Notre impact</a></li>
+          <li><a href="precommande.html">Précommande</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="mailto:nextstopbook@gmail.com">nextstopbook@gmail.com</a></li>
+          <li><a href="#">Bruxelles, Belgique</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2025 Nextstop Book ASBL · Tous droits réservés</p>
+    </div>
+  </div>
+</footer>
+
+<!-- Bouton mobile fixe -->
+<a href="precommande.html" class="mobile-cta-fixed" id="mobile-cta-fixed" aria-label="Précommander">
+  📦 Précommander · Devis gratuit, sans engagement
+</a>
+
+<style>
+  /* ── Bouton mobile fixe ────────────────────────────────── */
+  .mobile-cta-fixed {
+    display: none;
+  }
+  @media (max-width: 768px) {
+    .mobile-cta-fixed {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      height: 56px;
+      background: var(--accent);
+      color: var(--white);
+      font-size: .92rem;
+      font-weight: 600;
+      text-align: center;
+      z-index: 999;
+      border-top: 2px solid var(--accent-hover);
+      padding: 0 16px;
+      text-decoration: none;
+    }
+    .mobile-cta-fixed:hover { background: var(--accent-hover); }
+    body { padding-bottom: 56px; }
+  }
+</style>
+
+<!-- Scripts -->
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — Nextstop Book</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    body { background: #f0ebe0; }
+
+    /* ── Login screen ──────────────────────────────────────── */
+    #login-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .login-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 48px 40px;
+      max-width: 380px;
+      width: 100%;
+      text-align: center;
+      box-shadow: var(--shadow-lg);
+    }
+    .login-logo {
+      font-family: var(--font-serif);
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--green);
+      margin-bottom: 6px;
+    }
+    .login-logo span { font-style: italic; color: var(--text-light); }
+    .login-card h2 { font-family: var(--font-serif); font-size: 1.2rem; margin: 16px 0 8px; color: var(--text); }
+    .login-card p  { font-size: .88rem; color: var(--text-light); margin-bottom: 28px; }
+    .login-input-wrap { position: relative; margin-bottom: 16px; }
+    .login-input-wrap input {
+      width: 100%;
+      padding: 13px 44px 13px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      font-size: .95rem;
+      font-family: var(--font-sans);
+      outline: none;
+      transition: border-color .2s;
+    }
+    .login-input-wrap input:focus { border-color: var(--green-light); }
+    .login-input-wrap button {
+      position: absolute; right: 12px; top: 50%;
+      transform: translateY(-50%);
+      background: none; border: none; font-size: 1.1rem; cursor: pointer; color: var(--text-light);
+    }
+    .login-error {
+      display: none;
+      background: #ffeaea; border: 1px solid #f5c0c0;
+      border-radius: var(--radius-sm); color: #c0392b;
+      font-size: .85rem; padding: 10px 14px; margin-bottom: 14px;
+    }
+    .login-error.visible { display: block; }
+    #login-submit { width: 100%; justify-content: center; }
+
+    /* ── Admin interface ───────────────────────────────────── */
+    #admin-screen { display: none; padding-top: 0; }
+    #admin-screen.visible { display: block; }
+
+    .admin-topbar {
+      background: var(--green); padding: 14px 0;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 10px rgba(0,0,0,.2);
+    }
+    .admin-topbar-inner {
+      max-width: 900px; margin: 0 auto; padding: 0 20px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .admin-topbar-logo { font-family: var(--font-serif); font-size: 1.1rem; font-weight: 700; color: var(--white); }
+    .admin-topbar-logo span { font-style: italic; color: rgba(255,255,255,.55); font-size: .9rem; }
+    .admin-badge {
+      background: rgba(255,255,255,.15); color: rgba(255,255,255,.8);
+      font-size: .72rem; font-weight: 600; letter-spacing: .08em;
+      text-transform: uppercase; padding: 4px 12px; border-radius: 100px;
+    }
+    .admin-logout {
+      background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2);
+      color: rgba(255,255,255,.7); font-size: .8rem; padding: 6px 14px;
+      border-radius: var(--radius-sm); cursor: pointer; font-family: var(--font-sans);
+      transition: background .2s;
+    }
+    .admin-logout:hover { background: rgba(255,255,255,.2); }
+
+    .admin-container { max-width: 900px; margin: 0 auto; padding: 32px 20px 80px; display: flex; flex-direction: column; gap: 28px; }
+
+    /* ── Dashboard stats bar ─────────────────────────────────── */
+    .admin-stats-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+    .admin-stat-tile {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px 18px;
+      text-align: center;
+    }
+    .admin-stat-tile-num {
+      font-family: var(--font-serif);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--green);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .admin-stat-tile-lbl { font-size: .78rem; color: var(--text-light); text-transform: uppercase; letter-spacing: .06em; }
+
+    /* ── Admin cards ─────────────────────────────────────────── */
+    .admin-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+    .admin-card-header {
+      background: var(--green); padding: 16px 24px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .admin-card-header h2 { font-family: var(--font-serif); font-size: 1.1rem; color: var(--white); font-weight: 600; }
+    .admin-card-icon { font-size: 1.3rem; }
+    .admin-card-body { padding: 28px 24px; }
+
+    /* ── Admin form elements ─────────────────────────────────── */
+    .admin-form-row   { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .admin-form-row-3 { grid-template-columns: 1fr 1fr 1fr; }
+    .admin-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+    .admin-group label { font-size: .82rem; font-weight: 600; color: var(--text-mid); text-transform: uppercase; letter-spacing: .05em; }
+    .admin-group label .req { color: var(--accent); }
+    .admin-group input,
+    .admin-group select {
+      padding: 11px 14px; border: 1.5px solid var(--border);
+      border-radius: var(--radius); font-family: var(--font-sans);
+      font-size: .92rem; color: var(--text); background: var(--white);
+      outline: none; transition: border-color .2s, box-shadow .2s; width: 100%;
+    }
+    .admin-group input:focus,
+    .admin-group select:focus { border-color: var(--green-light); box-shadow: 0 0 0 3px rgba(45,138,96,.1); }
+    .admin-group input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
+    .admin-group input[type="number"]::-webkit-outer-spin-button,
+    .admin-group input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+    /* Lookup status */
+    .admin-lookup-status { font-size: .82rem; padding: 8px 12px; border-radius: var(--radius-sm); display: none; margin-top: 6px; }
+    .admin-lookup-status.found { display: block; background: #eef5f0; color: var(--green); border: 1px solid rgba(45,138,96,.2); }
+    .admin-lookup-status.new   { display: block; background: #f5f0e8; color: var(--accent); border: 1px solid rgba(184,89,0,.2); }
+
+    /* Pct total */
+    .pct-total-row {
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--cream); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 12px 16px; margin-bottom: 20px;
+    }
+    .pct-total-label { font-size: .88rem; color: var(--text-mid); }
+    .pct-total-value { font-family: var(--font-serif); font-size: 1.3rem; font-weight: 700; transition: color .2s; }
+    .pct-total-value.ok    { color: var(--green); }
+    .pct-total-value.error { color: #c0392b; }
+    .pct-error-msg { display: none; color: #c0392b; font-size: .82rem; margin-bottom: 12px; }
+    .pct-error-msg.visible { display: block; }
+
+    /* Messages */
+    .admin-msg { display: none; padding: 12px 16px; border-radius: var(--radius); font-size: .88rem; margin-top: 12px; }
+    .admin-msg.success { display: block; background: #eef5f0; color: var(--green); border: 1px solid rgba(45,138,96,.25); }
+    .admin-msg.error   { display: block; background: #ffeaea; color: #c0392b; border: 1px solid #f5c0c0; }
+
+    /* Divider */
+    .admin-divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+
+    /* ── Precommandes table ───────────────────────────────────── */
+    .admin-table-wrap { overflow-x: auto; }
+    .admin-table {
+      width: 100%; border-collapse: collapse;
+      font-size: .85rem;
+    }
+    .admin-table th {
+      text-align: left; padding: 10px 14px;
+      font-size: .75rem; font-weight: 700;
+      color: var(--text-mid); text-transform: uppercase; letter-spacing: .05em;
+      border-bottom: 2px solid var(--border);
+      background: var(--cream);
+    }
+    .admin-table td { padding: 11px 14px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: middle; }
+    .admin-table tr:last-child td { border-bottom: none; }
+    .admin-table tr:hover td { background: #faf8f4; }
+
+    .badge-cert   { background: #eef5f0; color: var(--green); font-size: .75rem; font-weight: 600; padding: 3px 9px; border-radius: 100px; border: 1px solid rgba(45,138,96,.2); }
+    .badge-nocert { background: #f5f0e8; color: var(--accent); font-size: .75rem; font-weight: 600; padding: 3px 9px; border-radius: 100px; border: 1px solid rgba(184,89,0,.2); }
+
+    .admin-table-empty { text-align: center; padding: 40px; color: var(--text-light); font-size: .9rem; }
+
+    .admin-prefill-btn {
+      background: none; border: 1px solid var(--border);
+      border-radius: var(--radius-sm); color: var(--green);
+      font-size: .75rem; padding: 4px 10px; cursor: pointer;
+      font-family: var(--font-sans); transition: background .15s;
+    }
+    .admin-prefill-btn:hover { background: #eef5f0; }
+
+    /* ── Responsive ──────────────────────────────────────────── */
+    @media (max-width: 700px) {
+      .admin-stats-bar    { grid-template-columns: 1fr 1fr; }
+      .admin-form-row     { grid-template-columns: 1fr; }
+      .admin-form-row-3   { grid-template-columns: 1fr; }
+      .login-card         { padding: 36px 24px; }
+      .admin-card-body    { padding: 20px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════ LOGIN ══════════════════ -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">Nextstop <span>Book</span></div>
+    <h2>Interface admin</h2>
+    <p>Accès réservé. Entrez le mot de passe pour continuer.</p>
+
+    <div class="login-error" id="login-error">Mot de passe incorrect. Réessayez.</div>
+
+    <div class="login-input-wrap">
+      <input type="password" id="pwd-input" placeholder="Mot de passe" autocomplete="current-password" />
+      <button type="button" id="pwd-toggle" title="Afficher/masquer">👁</button>
+    </div>
+
+    <button class="btn btn-primary" id="login-submit">Accéder →</button>
+  </div>
+</div>
+
+<!-- ══════════════════ ADMIN INTERFACE ══════════════════ -->
+<div id="admin-screen">
+
+  <div class="admin-topbar">
+    <div class="admin-topbar-inner">
+      <div class="admin-topbar-logo" style="display:flex;align-items:center;gap:10px;">
+        <svg width="36" height="33" viewBox="0 0 58 54" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><path d="M29 7C25 3 11 2 4 6L4 48C11 44 25 45 29 49" stroke="#f5f0e8" stroke-width="1.8" fill="none" stroke-linecap="round"/><path d="M29 7C33 3 47 2 54 6L54 48C47 44 33 45 29 49" stroke="#c1440e" stroke-width="1.8" fill="none" stroke-linecap="round"/><line x1="11" y1="18" x2="25" y2="18" stroke="#f5f0e8" stroke-width="1" opacity="0.35"/><line x1="11" y1="25" x2="25" y2="25" stroke="#f5f0e8" stroke-width="1" opacity="0.35"/><line x1="11" y1="32" x2="25" y2="32" stroke="#f5f0e8" stroke-width="1" opacity="0.35"/><line x1="33" y1="18" x2="47" y2="18" stroke="#c1440e" stroke-width="1" opacity="0.5"/><line x1="33" y1="25" x2="47" y2="25" stroke="#c1440e" stroke-width="1" opacity="0.5"/><line x1="33" y1="32" x2="47" y2="32" stroke="#c1440e" stroke-width="1" opacity="0.5"/><line x1="29" y1="7" x2="29" y2="49" stroke="#f5f0e8" stroke-width="1" opacity="0.18"/></svg>
+        <div><div style="font-family:'Playfair Display',Georgia,serif;font-size:20px;font-weight:700;color:#f5f0e8;line-height:1;letter-spacing:-0.01em;">Next<em style="font-style:italic;color:#c1440e;">stop</em></div><div style="display:flex;align-items:center;gap:6px;margin-top:5px;"><div style="height:1px;width:14px;background:rgba(245,240,232,0.22);"></div><div style="font-size:7.5px;letter-spacing:0.5em;text-transform:uppercase;color:rgba(245,240,232,0.4);">Book · ASBL</div></div></div>
+      </div>
+      <span class="admin-badge">Admin</span>
+      <button class="admin-logout" id="btn-logout">Déconnexion</button>
+    </div>
+  </div>
+
+  <div class="admin-container">
+
+    <!-- ── Tableau de bord ──────────────────────────────────── -->
+    <div class="admin-stats-bar">
+      <div class="admin-stat-tile">
+        <div class="admin-stat-tile-num" id="dash-precommandes">—</div>
+        <div class="admin-stat-tile-lbl">Précommandes</div>
+      </div>
+      <div class="admin-stat-tile">
+        <div class="admin-stat-tile-num" id="dash-certificats">—</div>
+        <div class="admin-stat-tile-lbl">Certificats</div>
+      </div>
+      <div class="admin-stat-tile">
+        <div class="admin-stat-tile-num" id="dash-livres">—</div>
+        <div class="admin-stat-tile-lbl">Livres collectés</div>
+      </div>
+      <div class="admin-stat-tile">
+        <div class="admin-stat-tile-num" id="dash-kg">—</div>
+        <div class="admin-stat-tile-lbl">Kg papier</div>
+      </div>
+    </div>
+
+    <!-- ── Section 1 : Précommandes ────────────────────────── -->
+    <div class="admin-card">
+      <div class="admin-card-header">
+        <span class="admin-card-icon">📋</span>
+        <h2>Précommandes</h2>
+      </div>
+      <div class="admin-card-body" style="padding: 0;">
+        <div class="admin-table-wrap">
+          <table class="admin-table" id="precommandes-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Téléphone</th>
+                <th>Adresse</th>
+                <th>Certificat</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="precommandes-tbody">
+              <tr><td colspan="7" class="admin-table-empty">Chargement…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Section 2 : Certificat ──────────────────────────── -->
+    <div class="admin-card">
+      <div class="admin-card-header">
+        <span class="admin-card-icon">📄</span>
+        <h2>Ajouter / modifier un certificat</h2>
+      </div>
+      <div class="admin-card-body">
+
+        <div class="admin-group">
+          <label>Email client <span class="req">*</span></label>
+          <input type="email" id="cert-email" placeholder="client@exemple.be" autocomplete="off" />
+          <div class="admin-lookup-status" id="lookup-status"></div>
+        </div>
+
+        <hr class="admin-divider" />
+
+        <div class="admin-form-row">
+          <div class="admin-group">
+            <label>Prénom</label>
+            <input type="text" id="cert-prenom" placeholder="Marie" />
+          </div>
+          <div class="admin-group">
+            <label>Nom</label>
+            <input type="text" id="cert-nom" placeholder="Dupont" />
+          </div>
+        </div>
+
+        <div class="admin-form-row">
+          <div class="admin-group">
+            <label>Date de collecte</label>
+            <input type="date" id="cert-date" />
+          </div>
+          <div class="admin-group"></div>
+        </div>
+
+        <div class="admin-form-row">
+          <div class="admin-group">
+            <label>Livres collectés</label>
+            <input type="number" id="cert-livres" placeholder="247" min="0" />
+          </div>
+          <div class="admin-group">
+            <label>Kg papier collecté</label>
+            <input type="number" id="cert-kg" placeholder="98.5" min="0" step="0.1" />
+          </div>
+        </div>
+
+        <div class="admin-form-row">
+          <div class="admin-group">
+            <label>Nombre d'associations aidées pour cette collecte <span style="color:var(--terracotta)">*</span></label>
+            <input type="number" id="cert-assoc-aidees" placeholder="3" min="0" required />
+            <div class="admin-field-error" id="cert-assoc-aidees-error" style="display:none; color:var(--terracotta); font-size:.8rem; margin-top:4px;">
+              Veuillez indiquer le nombre d'associations aidées pour cette collecte.
+            </div>
+          </div>
+          <div class="admin-group"></div>
+        </div>
+
+        <hr class="admin-divider" />
+        <p style="font-size:.82rem; color:var(--text-light); margin-bottom:16px;">
+          Répartition — laisser à 0 si le tri n'est pas encore fait.
+        </p>
+
+        <div class="admin-form-row admin-form-row-3">
+          <div class="admin-group">
+            <label>% Associations</label>
+            <input type="number" id="cert-pct-assoc" placeholder="45" min="0" max="100" />
+          </div>
+          <div class="admin-group">
+            <label>% Revente</label>
+            <input type="number" id="cert-pct-revente" placeholder="35" min="0" max="100" />
+          </div>
+          <div class="admin-group">
+            <label>% Recyclage</label>
+            <input type="number" id="cert-pct-recyclage" placeholder="20" min="0" max="100" />
+          </div>
+        </div>
+
+        <div class="pct-total-row">
+          <span class="pct-total-label">Total des pourcentages</span>
+          <span class="pct-total-value" id="pct-total">0 / 100</span>
+        </div>
+        <div class="pct-error-msg" id="pct-error">
+          ⚠️ Les pourcentages doivent totaliser 100% (ou rester tous à 0 si non renseignés).
+        </div>
+
+        <hr class="admin-divider" />
+        <div class="admin-group">
+          <label>📸 Photo de la collecte <span style="font-size:.8rem; color:var(--text-light); font-weight:400;">(optionnel — JPG, PNG, max 5 MB)</span></label>
+          <input type="file" id="cert-photo-file" accept="image/jpeg,image/png,image/webp" />
+          <div id="cert-photo-preview" style="display:none; margin:10px 0 0;">
+            <img id="cert-photo-preview-img" style="max-width:100%; max-height:200px; border-radius:8px; box-shadow:0 2px 12px rgba(0,0,0,.12); display:block;" alt="Aperçu" />
+          </div>
+        </div>
+
+        <button class="btn btn-primary" id="btn-save-cert" style="width:100%; justify-content:center;">
+          💾 Enregistrer le certificat
+        </button>
+        <div class="admin-msg" id="cert-msg"></div>
+
+      </div>
+    </div>
+
+
+  </div>
+</div>
+
+<script type="module">
+  import { supabaseClient, DB_CONFIGURED, ADMIN_PASSWORD } from './js/config.js';
+
+  document.body.classList.add('page-loaded');
+
+  /* ══════════════════ LOGIN ══════════════════ */
+  const loginScreen = document.getElementById('login-screen');
+  const adminScreen = document.getElementById('admin-screen');
+  const pwdInput    = document.getElementById('pwd-input');
+  const loginError  = document.getElementById('login-error');
+
+  function attemptLogin() {
+    if (pwdInput.value === ADMIN_PASSWORD && ADMIN_PASSWORD !== 'TON_MOT_DE_PASSE_ICI') {
+      loginScreen.style.display = 'none';
+      adminScreen.classList.add('visible');
+      loadDashboard();
+    } else {
+      loginError.classList.add('visible');
+      pwdInput.value = '';
+      pwdInput.focus();
+    }
+  }
+
+  document.getElementById('login-submit').addEventListener('click', attemptLogin);
+  pwdInput.addEventListener('keydown', e => { if (e.key === 'Enter') attemptLogin(); });
+  document.getElementById('pwd-toggle').addEventListener('click', () => {
+    pwdInput.type = pwdInput.type === 'password' ? 'text' : 'password';
+  });
+  document.getElementById('btn-logout').addEventListener('click', () => {
+    adminScreen.classList.remove('visible');
+    loginScreen.style.display = 'flex';
+    pwdInput.value = '';
+  });
+
+  /* ══════════════════ DASHBOARD ══════════════════ */
+  async function loadDashboard() {
+    loadPrecommandes();
+
+    if (!DB_CONFIGURED || !supabaseClient) {
+      document.getElementById('dash-precommandes').textContent = '—';
+      document.getElementById('dash-certificats').textContent  = '—';
+      document.getElementById('dash-livres').textContent       = '—';
+      document.getElementById('dash-kg').textContent           = '—';
+      return;
+    }
+
+    const [pcRes, certRes] = await Promise.all([
+      supabaseClient.from('precommandes').select('id', { count: 'exact', head: true }),
+      supabaseClient.from('certificats').select('livres_collectes, kg_papier_collecté'),
+    ]);
+
+    document.getElementById('dash-precommandes').textContent = pcRes.count ?? '—';
+    document.getElementById('dash-certificats').textContent  = (certRes.data || []).length;
+
+    const livres = (certRes.data || []).reduce((s, r) => s + (r.livres_collectes || 0), 0);
+    const kg     = (certRes.data || []).reduce((s, r) => s + parseFloat(r['kg_papier_collecté'] || 0), 0);
+    document.getElementById('dash-livres').textContent = livres.toLocaleString('fr-BE');
+    document.getElementById('dash-kg').textContent     = Math.round(kg).toLocaleString('fr-BE');
+  }
+
+  /* ══════════════════ SECTION 1 — PRÉCOMMANDES ══════════════════ */
+  async function loadPrecommandes() {
+    const tbody = document.getElementById('precommandes-tbody');
+
+    if (!DB_CONFIGURED || !supabaseClient) {
+      tbody.innerHTML = '<tr><td colspan="7" class="admin-table-empty">Mode démo — pas de données</td></tr>';
+      return;
+    }
+
+    const { data, error } = await supabaseClient
+      .from('precommandes')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(50);
+
+    if (error || !data || data.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" class="admin-table-empty">Aucune précommande pour l\'instant.</td></tr>';
+      return;
+    }
+
+    // Check which emails have a certificat
+    const emails = data.map(r => r.email);
+    const { data: certs } = await supabaseClient
+      .from('certificats')
+      .select('email')
+      .in('email', emails);
+    const certEmails = new Set((certs || []).map(c => c.email));
+
+    tbody.innerHTML = data.map(row => {
+      const date    = row.created_at ? new Date(row.created_at).toLocaleDateString('fr-BE') : '—';
+      const nom     = [row.prenom, row.nom].filter(Boolean).join(' ') || '—';
+      const hasCert = certEmails.has(row.email);
+      const badge   = hasCert
+        ? '<span class="badge-cert">✓ Certificat</span>'
+        : '<span class="badge-nocert">En attente</span>';
+      const prefill = hasCert ? '' :
+        `<button class="admin-prefill-btn" data-email="${row.email}" data-prenom="${row.prenom||''}" data-nom="${row.nom||''}">+ Créer certificat</button>`;
+
+      return `<tr>
+        <td>${date}</td>
+        <td>${nom}</td>
+        <td style="font-size:.82rem;">${row.email || '—'}</td>
+        <td style="font-size:.82rem;">${row.telephone || '—'}</td>
+        <td style="font-size:.82rem; max-width:180px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${row.adresse || '—'}</td>
+        <td>${badge}</td>
+        <td>${prefill}</td>
+      </tr>`;
+    }).join('');
+
+    // Wire up prefill buttons
+    tbody.querySelectorAll('.admin-prefill-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.getElementById('cert-email').value  = btn.dataset.email;
+        document.getElementById('cert-prenom').value = btn.dataset.prenom;
+        document.getElementById('cert-nom').value    = btn.dataset.nom;
+        document.getElementById('lookup-status').textContent = '+ Nouvel email — un nouveau certificat sera créé.';
+        document.getElementById('lookup-status').className   = 'admin-lookup-status new';
+        document.querySelector('.admin-card:nth-child(3)').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+  }
+
+  /* ══════════════════ SECTION 2 — CERTIFICAT ══════════════════ */
+  const emailInput   = document.getElementById('cert-email');
+  const lookupStatus = document.getElementById('lookup-status');
+  let lookupTimer = null;
+  let isUpdate    = false;
+
+  emailInput.addEventListener('input', () => {
+    clearTimeout(lookupTimer);
+    lookupStatus.className = 'admin-lookup-status';
+    if (!emailInput.value.includes('@')) return;
+    lookupTimer = setTimeout(() => lookupByEmail(emailInput.value.trim()), 600);
+  });
+
+  async function lookupByEmail(email) {
+    if (!DB_CONFIGURED || !supabaseClient) return;
+    const { data } = await supabaseClient
+      .from('certificats').select('*')
+      .eq('email', email.toLowerCase()).single();
+
+    if (data) {
+      isUpdate = true;
+      lookupStatus.textContent = '✓ Certificat existant trouvé — les champs ont été pré-remplis.';
+      lookupStatus.className   = 'admin-lookup-status found';
+      fillForm(data);
+    } else {
+      isUpdate = false;
+      lookupStatus.textContent = '+ Nouvel email — un nouveau certificat sera créé.';
+      lookupStatus.className   = 'admin-lookup-status new';
+    }
+  }
+
+  function fillForm(data) {
+    document.getElementById('cert-prenom').value        = data.prenom           || '';
+    document.getElementById('cert-nom').value           = data.nom              || '';
+    document.getElementById('cert-date').value          = data.date_collecte    || '';
+    document.getElementById('cert-livres').value        = data.livres_collectes ?? '';
+    document.getElementById('cert-kg').value            = data['kg_papier_collecté'] ?? '';
+    document.getElementById('cert-pct-assoc').value     = data.pct_associations  ?? '';
+    document.getElementById('cert-pct-revente').value   = data.pct_revente       ?? '';
+    document.getElementById('cert-pct-recyclage').value = data.pct_recyclage     ?? '';
+    document.getElementById('cert-assoc-aidees').value  = data.associations_aidees ?? '';
+    // Affiche la photo existante si disponible
+    const previewEl = document.getElementById('cert-photo-preview');
+    const previewImg = document.getElementById('cert-photo-preview-img');
+    if (data.photo_url) {
+      previewImg.src = data.photo_url;
+      previewEl.style.display = 'block';
+    } else {
+      previewEl.style.display = 'none';
+    }
+    updatePctTotal();
+  }
+
+  ['cert-pct-assoc','cert-pct-revente','cert-pct-recyclage'].forEach(id =>
+    document.getElementById(id).addEventListener('input', updatePctTotal)
+  );
+
+  function updatePctTotal() {
+    const a = parseInt(document.getElementById('cert-pct-assoc').value)     || 0;
+    const r = parseInt(document.getElementById('cert-pct-revente').value)   || 0;
+    const c = parseInt(document.getElementById('cert-pct-recyclage').value) || 0;
+    const total = a + r + c;
+    const el = document.getElementById('pct-total');
+    el.textContent = `${total} / 100`;
+    el.className   = 'pct-total-value ' + (total === 100 || total === 0 ? 'ok' : 'error');
+  }
+
+  document.getElementById('btn-save-cert').addEventListener('click', async () => {
+    const email = emailInput.value.trim().toLowerCase();
+    if (!email || !email.includes('@')) { showMsg('cert-msg', 'error', 'Email obligatoire.'); return; }
+
+    const assocAideesInput = document.getElementById('cert-assoc-aidees');
+    const assocAideesError = document.getElementById('cert-assoc-aidees-error');
+    const assocAideesVal   = assocAideesInput.value.trim();
+    if (assocAideesVal === '' || assocAideesVal === null) {
+      assocAideesError.style.display = 'block';
+      assocAideesInput.focus();
+      return;
+    }
+    assocAideesError.style.display = 'none';
+
+    const a = parseInt(document.getElementById('cert-pct-assoc').value)     || 0;
+    const r = parseInt(document.getElementById('cert-pct-revente').value)   || 0;
+    const c = parseInt(document.getElementById('cert-pct-recyclage').value) || 0;
+    if (a + r + c !== 0 && a + r + c !== 100) {
+      document.getElementById('pct-error').classList.add('visible'); return;
+    }
+    document.getElementById('pct-error').classList.remove('visible');
+
+    const payload = {
+      email,
+      prenom:              document.getElementById('cert-prenom').value.trim()   || null,
+      nom:                 document.getElementById('cert-nom').value.trim()       || null,
+      date_collecte:       document.getElementById('cert-date').value             || null,
+      livres_collectes:    parseInt(document.getElementById('cert-livres').value) || 0,
+      'kg_papier_collecté': parseFloat(document.getElementById('cert-kg').value) || 0,
+      pct_associations:    a,
+      pct_revente:         r,
+      pct_recyclage:       c,
+      associations_aidees: parseInt(assocAideesVal) || 0,
+    };
+
+    const btn = document.getElementById('btn-save-cert');
+    btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Enregistrement…';
+
+    if (!DB_CONFIGURED || !supabaseClient) {
+      await new Promise(res => setTimeout(res, 800));
+      btn.disabled = false; btn.innerHTML = '💾 Enregistrer le certificat';
+      showMsg('cert-msg', 'success', `✓ [Mode démo] Certificat pour ${email} enregistré.`);
+      return;
+    }
+
+    // Upload photo si une image est sélectionnée
+    const photoFile = document.getElementById('cert-photo-file').files[0];
+    if (photoFile) {
+      if (photoFile.size > 5 * 1024 * 1024) {
+        btn.disabled = false; btn.innerHTML = '💾 Enregistrer le certificat';
+        showMsg('cert-msg', 'error', 'Photo trop lourde (max 5 MB).'); return;
+      }
+      btn.innerHTML = '<span class="spinner"></span> Upload photo…';
+      const ext      = photoFile.name.split('.').pop().toLowerCase();
+      const fileName = `${email.replace(/[^a-z0-9]/g, '_')}_${Date.now()}.${ext}`;
+      const { error: uploadError } = await supabaseClient.storage
+        .from('certificats-photos')
+        .upload(fileName, photoFile, { upsert: true, contentType: photoFile.type });
+      if (uploadError) {
+        btn.disabled = false; btn.innerHTML = '💾 Enregistrer le certificat';
+        showMsg('cert-msg', 'error', `Erreur upload photo : ${uploadError.message}`); return;
+      }
+      const { data: urlData } = supabaseClient.storage.from('certificats-photos').getPublicUrl(fileName);
+      payload.photo_url = urlData.publicUrl;
+      btn.innerHTML = '<span class="spinner"></span> Enregistrement…';
+    }
+
+    const { error } = await supabaseClient
+      .from('certificats').upsert([payload], { onConflict: 'email' });
+
+    btn.disabled = false; btn.innerHTML = '💾 Enregistrer le certificat';
+
+    if (error) {
+      showMsg('cert-msg', 'error', `Erreur : ${error.message}`);
+    } else {
+      showMsg('cert-msg', 'success', `✓ Certificat ${isUpdate ? 'mis à jour' : 'créé'} pour ${email}`);
+      isUpdate = true;
+      lookupStatus.textContent = '✓ Certificat existant — modifié avec succès.';
+      lookupStatus.className   = 'admin-lookup-status found';
+      loadDashboard(); // refresh stats
+    }
+  });
+
+  /* ══════════════════ PHOTO PREVIEW (inline) ══════════════════ */
+  document.getElementById('cert-photo-file').addEventListener('change', () => {
+    const file    = document.getElementById('cert-photo-file').files[0];
+    const preview = document.getElementById('cert-photo-preview');
+    const img     = document.getElementById('cert-photo-preview-img');
+    if (!file) { preview.style.display = 'none'; return; }
+    const reader = new FileReader();
+    reader.onload = e => { img.src = e.target.result; preview.style.display = 'block'; };
+    reader.readAsDataURL(file);
+  });
+
+  /* ── Helper ─────────────────────────────────────────────── */
+  function showMsg(id, type, text) {
+    const el = document.getElementById(id);
+    el.textContent = text;
+    el.className   = `admin-msg ${type}`;
+    setTimeout(() => { el.className = 'admin-msg'; }, 5000);
+  }
+</script>
+</body>
+</html>

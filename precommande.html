@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Précommande — Nextstop Book</title>
+  <meta name="description" content="Précommandez le service Nextstop Book et donnez une seconde vie à vos livres." />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="form-page">
+
+<!-- Progress bar -->
+<div id="progress-bar"></div>
+
+<!-- Confetti canvas -->
+<canvas id="confetti-canvas" aria-hidden="true"></canvas>
+
+<!-- Success screen -->
+<div id="success-screen" role="alert" aria-live="assertive">
+  <div class="success-icon">✅</div>
+  <h2>Merci <span id="success-prenom"></span>&nbsp;!</h2>
+  <p>
+    Nous avons bien reçu votre intérêt.<br>
+    Notre équipe vous contactera <strong>sous 48h</strong>.
+  </p>
+  <div class="success-actions">
+    <a href="index.html" class="btn btn-outline-dark">← Retour à l'accueil</a>
+    <button class="btn btn-primary" onclick="location.reload()">Nouvelle précommande</button>
+  </div>
+</div>
+
+<!-- ══════════════════ NAV ══════════════════ -->
+<nav id="main-nav" role="navigation" aria-label="Navigation principale">
+  <div class="container">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <svg width="46" height="42" viewBox="0 0 58 54" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><path d="M29 7C25 3 11 2 4 6L4 48C11 44 25 45 29 49" stroke="#f5f0e8" stroke-width="1.8" fill="none" stroke-linecap="round"/><path d="M29 7C33 3 47 2 54 6L54 48C47 44 33 45 29 49" stroke="#c1440e" stroke-width="1.8" fill="none" stroke-linecap="round"/><line x1="11" y1="18" x2="25" y2="18" stroke="#f5f0e8" stroke-width="1" opacity="0.35"/><line x1="11" y1="25" x2="25" y2="25" stroke="#f5f0e8" stroke-width="1" opacity="0.35"/><line x1="11" y1="32" x2="25" y2="32" stroke="#f5f0e8" stroke-width="1" opacity="0.35"/><line x1="33" y1="18" x2="47" y2="18" stroke="#c1440e" stroke-width="1" opacity="0.5"/><line x1="33" y1="25" x2="47" y2="25" stroke="#c1440e" stroke-width="1" opacity="0.5"/><line x1="33" y1="32" x2="47" y2="32" stroke="#c1440e" stroke-width="1" opacity="0.5"/><line x1="29" y1="7" x2="29" y2="49" stroke="#f5f0e8" stroke-width="1" opacity="0.18"/></svg>
+        <div><div style="font-family:'Playfair Display',Georgia,serif;font-size:23px;font-weight:700;color:#f5f0e8;line-height:1;letter-spacing:-0.01em;">Next<em style="font-style:italic;color:#c1440e;">stop</em></div><div style="display:flex;align-items:center;gap:7px;margin-top:6px;"><div style="height:1px;width:16px;background:rgba(245,240,232,0.25);"></div><div style="font-size:8px;letter-spacing:0.5em;text-transform:uppercase;color:rgba(245,240,232,0.45);">Book · ASBL</div></div></div>
+      </a>
+      <ul class="nav-links" role="list">
+        <li><a href="index.html#how">Comment ça marche</a></li>
+        <li><a href="index.html#impact">Notre impact</a></li>
+        <li><a href="certificat.html">Mon Certificat</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="index.html" class="btn btn-outline">← Accueil</a>
+      </div>
+      <button class="nav-burger" id="nav-burger" aria-expanded="false" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile menu -->
+<div id="mobile-menu" role="dialog" aria-label="Menu mobile">
+  <a href="index.html#how">Comment ça marche</a>
+  <a href="index.html#impact">Notre impact</a>
+  <a href="index.html">← Retour à l'accueil</a>
+</div>
+
+<!-- ══════════════════ FORM HERO ══════════════════ -->
+<div class="form-hero">
+  <div class="container">
+    <p class="section-tag" style="color:rgba(255,255,255,.5)">Précommande</p>
+    <h1>Réservez votre collecte</h1>
+    <p>Remplissez ce formulaire gratuitement. Nous vous recontactons sous 48h avec un devis personnalisé pour organiser le passage chez vous. Aucun paiement avant votre accord.</p>
+    <div class="form-hero-notice">📦 Volume minimum : 50 livres — Nous ne nous déplaçons pas en dessous de ce seuil.</div>
+  </div>
+</div>
+
+<!-- ══════════════════ FAQ ══════════════════ -->
+<section class="faq-section">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:40px;">
+      <p class="section-tag">Questions fréquentes</p>
+      <h2 class="section-title">Tout ce que vous voulez savoir</h2>
+    </div>
+    <div class="faq-list">
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span>Combien coûte le service ?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>L'inscription et le devis sont entièrement gratuits. Le service de collecte est ensuite facturé selon le volume : la plupart de nos interventions se situent entre 20 € et 100 €. Aucun paiement n'est demandé avant votre accord sur le devis.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span>Quels types de livres acceptez-vous ?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>Nous acceptons tous les livres sans exception — anciens, récents, jaunis, spécialisés, scolaires. Contrairement aux associations traditionnelles, nous ne refusons rien.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span>Dans quel délai intervenez-vous ?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>Notre équipe vous contacte rapidement après votre demande pour établir votre devis et convenir d'un créneau adapté à votre situation.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span>Que deviennent mes livres exactement ?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>Vos livres sont triés en 3 flux : les ouvrages récents sont revendus en seconde main, une partie est transmise à nos associations partenaires qui les redistribuent aux écoles, et le reste est recyclé de façon responsable. Vous recevrez un certificat détaillant l'impact exact de votre collecte.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span>Est-ce que vous vous déplacez partout en Belgique ?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>Nous opérons actuellement en Wallonie et à Bruxelles. N'hésitez pas à nous contacter même si vous n'êtes pas sûr de votre zone — nous ferons notre possible.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<style>
+  /* ── FAQ Section ───────────────────────────────────────── */
+  .faq-section {
+    background: var(--white);
+    padding: 72px 0 56px;
+    border-bottom: 1px solid var(--border);
+  }
+  .faq-list {
+    max-width: 720px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .faq-item {
+    border-bottom: 1px solid var(--border);
+  }
+  .faq-item:first-child {
+    border-top: 1px solid var(--border);
+  }
+  .faq-question {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 20px 4px;
+    background: none;
+    border: none;
+    text-align: left;
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+    cursor: pointer;
+    transition: color .2s;
+  }
+  .faq-question:hover { color: var(--green); }
+  .faq-question[aria-expanded="true"] { color: var(--green); }
+  .faq-icon {
+    font-size: 1.4rem;
+    font-weight: 300;
+    color: var(--green-light);
+    flex-shrink: 0;
+    transition: transform .3s ease;
+    line-height: 1;
+  }
+  .faq-question[aria-expanded="true"] .faq-icon {
+    transform: rotate(45deg);
+  }
+  .faq-answer {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows .3s ease;
+    overflow: hidden;
+  }
+  .faq-answer.open {
+    grid-template-rows: 1fr;
+  }
+  .faq-answer > p {
+    min-height: 0;
+    overflow: hidden;
+    padding: 0 4px 20px;
+    font-size: .95rem;
+    color: var(--text-light);
+    line-height: 1.75;
+  }
+</style>
+
+<script>
+  document.querySelectorAll('.faq-question').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const answer  = btn.nextElementSibling;
+      const isOpen  = btn.getAttribute('aria-expanded') === 'true';
+      // Close all
+      document.querySelectorAll('.faq-question').forEach(b => {
+        b.setAttribute('aria-expanded', 'false');
+        b.nextElementSibling.classList.remove('open');
+      });
+      // Open clicked (unless it was already open)
+      if (!isOpen) {
+        btn.setAttribute('aria-expanded', 'true');
+        answer.classList.add('open');
+      }
+    });
+  });
+</script>
+
+<!-- ══════════════════ FORM MULTI-STEP ══════════════════ -->
+<style>
+  /* ── Form hero notice ────────────────────────────────── */
+  .form-hero-notice {
+    display: inline-block;
+    margin-top: 18px;
+    background: rgba(255,255,255,.1);
+    border: 1px solid rgba(255,255,255,.22);
+    border-radius: 100px;
+    padding: 8px 20px;
+    font-size: .84rem;
+    color: rgba(255,255,255,.82);
+    letter-spacing: .01em;
+  }
+
+  /* ── Stepper ─────────────────────────────────────────── */
+  .mf-stepper {
+    max-width: 640px;
+    margin: 0 auto 28px;
+    padding: 0 8px;
+  }
+  .mf-stepper-steps {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+  }
+  .mf-stepper-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 7px;
+    min-width: 76px;
+    cursor: default;
+  }
+  .mf-stepper-dot {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--border);
+    color: var(--text-light);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: .9rem;
+    transition: background .3s, color .3s, box-shadow .3s;
+    position: relative;
+  }
+  .mf-stepper-item.active  .mf-stepper-dot { background: var(--green); color: #fff; box-shadow: 0 0 0 5px rgba(45,138,96,.18); }
+  .mf-stepper-item.done    .mf-stepper-dot { background: var(--green-light); color: #fff; }
+  .mf-stepper-item.done    .mf-stepper-dot::after { content: '✓'; position: absolute; font-size: .85rem; }
+  .mf-stepper-item.done    .mf-stepper-dot span { display: none; }
+  .mf-stepper-label {
+    font-size: .7rem; font-weight: 600;
+    letter-spacing: .05em; text-transform: uppercase;
+    color: var(--text-light); transition: color .3s;
+    text-align: center;
+  }
+  .mf-stepper-item.active .mf-stepper-label { color: var(--green); }
+  .mf-stepper-item.done   .mf-stepper-label { color: var(--green-light); }
+  .mf-stepper-line {
+    flex: 1; height: 2px;
+    background: var(--border);
+    margin-top: 17px;
+    transition: background .4s;
+  }
+  .mf-stepper-line.done { background: var(--green-light); }
+
+  /* ── Panels ──────────────────────────────────────────── */
+  .mf-panel { display: none; }
+  .mf-panel.active { display: block; animation: mf-in .32s cubic-bezier(.4,0,.2,1); }
+  .mf-card[data-dir="back"] .mf-panel.active { animation: mf-in-back .32s cubic-bezier(.4,0,.2,1); }
+  @keyframes mf-in      { from { opacity:0; transform:translateX(30px); } to { opacity:1; transform:translateX(0); } }
+  @keyframes mf-in-back { from { opacity:0; transform:translateX(-30px); } to { opacity:1; transform:translateX(0); } }
+  @keyframes mf-shake   { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-7px)} 40%{transform:translateX(7px)} 60%{transform:translateX(-5px)} 80%{transform:translateX(5px)} }
+  .mf-shake { animation: mf-shake .38s ease; }
+
+  .mf-panel-eyebrow {
+    font-size: .72rem; font-weight: 700;
+    letter-spacing: .1em; text-transform: uppercase;
+    color: var(--green-light); margin-bottom: 6px;
+  }
+  .mf-panel-title {
+    font-family: var(--font-serif); font-size: 1.55rem;
+    color: var(--text); margin-bottom: 5px;
+  }
+  .mf-panel-desc {
+    font-size: .9rem; color: var(--text-light); margin-bottom: 26px; line-height: 1.6;
+  }
+
+  /* ── Address row ─────────────────────────────────────── */
+  .mf-address-row { display: flex; gap: 14px; align-items: flex-start; flex-wrap: nowrap; }
+  .mf-street { flex: 1; min-width: 0; }
+  .mf-num { width: 90px; flex-shrink: 0; }
+
+  /* ── Min-volume notice ───────────────────────────────── */
+  .mf-min-notice {
+    display: flex; gap: 14px; align-items: flex-start;
+    background: rgba(193,68,14,.06);
+    border: 1px solid rgba(193,68,14,.18);
+    border-left: 4px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 15px 18px; margin-bottom: 24px;
+  }
+  .mf-min-notice-icon { font-size: 1.35rem; flex-shrink: 0; margin-top: 1px; }
+  .mf-min-notice strong { display: block; color: var(--accent); font-size: .93rem; margin-bottom: 4px; }
+  .mf-min-notice p { font-size: .84rem; color: var(--text-light); margin: 0; line-height: 1.55; }
+
+  /* ── Trust bar (step 4) ──────────────────────────────── */
+  .mf-trust-bar {
+    display: flex; flex-wrap: wrap; gap: 10px 18px;
+    margin-bottom: 22px; padding-bottom: 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .mf-trust-bar span { font-size: .82rem; color: var(--text-light); display: flex; align-items: center; gap: 5px; }
+  .mf-trust-check { color: var(--green-light); font-weight: 700; }
+
+  /* ── Nav buttons ─────────────────────────────────────── */
+  .mf-nav {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 24px; padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+  .mf-btn-next { min-width: 140px; }
+
+  /* ── Mobile ──────────────────────────────────────────── */
+  @media (max-width: 620px) {
+    .mf-stepper-label { display: none; }
+    .mf-stepper-item  { min-width: 36px; }
+    .mf-address-row   { flex-wrap: wrap; }
+    .mf-num           { width: 100%; }
+  }
+</style>
+
+<main class="form-container" style="max-width:680px;">
+
+  <!-- Stepper -->
+  <div class="mf-stepper">
+    <div class="mf-stepper-steps">
+      <div class="mf-stepper-item active" data-s="1">
+        <div class="mf-stepper-dot"><span>1</span></div>
+        <div class="mf-stepper-label">Coordonnées</div>
+      </div>
+      <div class="mf-stepper-line"></div>
+      <div class="mf-stepper-item" data-s="2">
+        <div class="mf-stepper-dot"><span>2</span></div>
+        <div class="mf-stepper-label">Adresse</div>
+      </div>
+      <div class="mf-stepper-line"></div>
+      <div class="mf-stepper-item" data-s="3">
+        <div class="mf-stepper-dot"><span>3</span></div>
+        <div class="mf-stepper-label">Situation</div>
+      </div>
+      <div class="mf-stepper-line"></div>
+      <div class="mf-stepper-item" data-s="4">
+        <div class="mf-stepper-dot"><span>4</span></div>
+        <div class="mf-stepper-label">Finaliser</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form card -->
+  <div class="form-card mf-card" data-reveal>
+    <form id="precommande-form" novalidate>
+
+      <!-- ── Panel 1 : Coordonnées ── -->
+      <div class="mf-panel active" data-panel="1">
+        <p class="mf-panel-eyebrow">Étape 1 sur 4</p>
+        <h2 class="mf-panel-title">Vos coordonnées</h2>
+        <p class="mf-panel-desc">Pour vous recontacter et préparer votre devis personnalisé.</p>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="prenom">Prénom <span class="required">*</span></label>
+            <input type="text" id="prenom" name="prenom" placeholder="Marie" autocomplete="given-name" />
+            <span class="field-error">Prénom requis (min. 2 caractères)</span>
+          </div>
+          <div class="form-group">
+            <label for="nom">Nom <span class="required">*</span></label>
+            <input type="text" id="nom" name="nom" placeholder="Dupont" autocomplete="family-name" />
+            <span class="field-error">Nom requis (min. 2 caractères)</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="email">Email <span class="required">*</span></label>
+            <input type="email" id="email" name="email" placeholder="marie@exemple.be" autocomplete="email" />
+            <span class="field-error">Adresse email invalide</span>
+          </div>
+          <div class="form-group">
+            <label for="telephone">Téléphone</label>
+            <input type="tel" id="telephone" name="telephone" placeholder="+32 4XX XX XX XX" autocomplete="tel" />
+            <span class="field-error">Numéro invalide</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Panel 2 : Adresse ── -->
+      <div class="mf-panel" data-panel="2">
+        <p class="mf-panel-eyebrow">Étape 2 sur 4</p>
+        <h2 class="mf-panel-title">Votre adresse</h2>
+        <p class="mf-panel-desc">Là où se trouvent les livres à collecter.</p>
+
+        <div class="form-row mf-address-row">
+          <div class="form-group mf-street">
+            <label for="rue">Rue <span class="required">*</span></label>
+            <input type="text" id="rue" name="rue" placeholder="Rue de la Paix" autocomplete="address-line1" />
+            <span class="field-error">Nom de rue requis</span>
+          </div>
+          <div class="form-group mf-num">
+            <label for="numero">N° <span class="required">*</span></label>
+            <input type="text" id="numero" name="numero" placeholder="12A" />
+            <span class="field-error">Requis</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="ville">Ville <span class="required">*</span></label>
+            <input type="text" id="ville" name="ville" placeholder="Bruxelles, Ixelles…" autocomplete="address-level2" />
+            <span class="field-error">Ville requise</span>
+          </div>
+          <div class="form-group">
+            <label for="code_postal">Code postal</label>
+            <input type="text" id="code_postal" name="code_postal" placeholder="1050" autocomplete="postal-code" />
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Panel 3 : Situation ── -->
+      <div class="mf-panel" data-panel="3">
+        <p class="mf-panel-eyebrow">Étape 3 sur 4</p>
+        <h2 class="mf-panel-title">Votre situation</h2>
+        <p class="mf-panel-desc">Pour estimer le travail et établir votre devis personnalisé.</p>
+
+        <div class="mf-min-notice">
+          <span class="mf-min-notice-icon">📦</span>
+          <div>
+            <strong>Volume minimum : 50 livres</strong>
+            <p>Nous ne nous déplaçons pas pour moins de 50 livres. Si votre collection est en dessous de ce seuil, nous ne pourrons malheureusement pas intervenir.</p>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="situation">Situation <span class="required">*</span></label>
+            <select id="situation" name="situation">
+              <option value="">Sélectionnez votre situation</option>
+              <option value="Déménagement">🏠 Déménagement</option>
+              <option value="Succession / Héritage">⚖️ Succession / Héritage</option>
+              <option value="Maison de repos">🏡 Maison de repos</option>
+              <option value="Déménagement bureau">🏢 Déménagement de bureau</option>
+              <option value="Tri régulier">📦 Tri régulier</option>
+              <option value="Autre">✨ Autre</option>
+            </select>
+            <span class="field-error">Veuillez sélectionner une situation</span>
+          </div>
+          <div class="form-group">
+            <label for="volume">Volume estimé <span class="required">*</span></label>
+            <select id="volume" name="volume">
+              <option value="">Estimez le volume</option>
+              <option value="50–100 livres (env. 30 kg)">📦 50–100 livres (env. 30 kg)</option>
+              <option value="Une pièce entière (100–300 livres)">📚 Une pièce entière (100–300 livres)</option>
+              <option value="Un appartement complet (300+ livres)">🏠 Un appartement complet (300+ livres)</option>
+              <option value="Je ne sais pas, j'ai besoin d'un avis">🤔 Je ne sais pas, j'ai besoin d'un avis</option>
+            </select>
+            <span class="field-error">Veuillez sélectionner un volume estimé</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Panel 4 : Finaliser ── -->
+      <div class="mf-panel" data-panel="4">
+        <p class="mf-panel-eyebrow">Étape 4 sur 4</p>
+        <h2 class="mf-panel-title">Pour finir</h2>
+        <p class="mf-panel-desc">Un dernier mot avant d'envoyer votre demande.</p>
+
+        <div class="mf-trust-bar">
+          <span><span class="mf-trust-check">✓</span> Inscription gratuite</span>
+          <span><span class="mf-trust-check">✓</span> Réponse sous 48h</span>
+          <span><span class="mf-trust-check">✓</span> Devis personnalisé</span>
+          <span><span class="mf-trust-check">✓</span> Certificat d'impact</span>
+        </div>
+
+        <div class="form-group">
+          <label for="message">Message (optionnel)</label>
+          <textarea id="message" name="message" placeholder="Accès particulier (escalier, ascenseur…), types de livres, disponibilités préférées, questions…"></textarea>
+        </div>
+
+        <div class="form-group checkbox-group">
+          <input type="checkbox" id="rgpd" name="rgpd" />
+          <label for="rgpd">
+            J'accepte que mes données soient utilisées pour traiter ma demande, conformément à la
+            <a href="#">politique de confidentialité</a> de Nextstop Book. <span class="required">*</span>
+          </label>
+          <span class="field-error" style="width:100%;">Vous devez accepter la politique de confidentialité</span>
+        </div>
+
+        <div class="form-submit-area">
+          <button type="submit" class="btn btn-submit" id="form-submit">
+            📦 Envoyer ma précommande
+          </button>
+          <p style="text-align:center; margin-top:12px; font-size:.8rem; color:var(--text-light);">
+            Inscription gratuite · Réponse sous 48h · Devis personnalisé
+          </p>
+        </div>
+      </div>
+
+    </form>
+
+    <!-- Step navigation -->
+    <div class="mf-nav">
+      <button type="button" class="btn btn-outline mf-btn-prev" id="mf-prev" style="visibility:hidden;">← Retour</button>
+      <button type="button" class="btn btn-primary mf-btn-next" id="mf-next">Continuer →</button>
+    </div>
+  </div>
+
+  <!-- Info cards -->
+  <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-top:32px;" class="info-grid">
+    <div style="background:var(--white); border:1px solid var(--border); border-radius:var(--radius-lg); padding:24px; text-align:center;" data-reveal>
+      <div style="font-size:2rem; margin-bottom:10px;">⚡</div>
+      <strong style="display:block; margin-bottom:6px; font-size:.95rem;">Réponse rapide</strong>
+      <p style="font-size:.85rem; color:var(--text-light);">Nous vous recontactons rapidement pour établir votre devis et planifier la collecte.</p>
+    </div>
+    <div style="background:var(--white); border:1px solid var(--border); border-radius:var(--radius-lg); padding:24px; text-align:center;" data-reveal data-reveal-delay="1">
+      <div style="font-size:2rem; margin-bottom:10px;">🔒</div>
+      <strong style="display:block; margin-bottom:6px; font-size:.95rem;">Données protégées</strong>
+      <p style="font-size:.85rem; color:var(--text-light);">Vos informations ne sont jamais revendues ni partagées à des tiers.</p>
+    </div>
+    <div style="background:var(--white); border:1px solid var(--border); border-radius:var(--radius-lg); padding:24px; text-align:center;" data-reveal data-reveal-delay="2">
+      <div style="font-size:2rem; margin-bottom:10px;">📄</div>
+      <strong style="display:block; margin-bottom:6px; font-size:.95rem;">Certificat d'impact</strong>
+      <p style="font-size:.85rem; color:var(--text-light);">Après votre collecte, retrouvez votre certificat personnalisé sur la page "Mon Certificat".</p>
+    </div>
+  </div>
+</main>
+
+<script>
+(function () {
+  let step = 1;
+  const TOTAL = 4;
+  const form    = document.getElementById('precommande-form');
+  const card    = document.querySelector('.mf-card');
+  const btnPrev = document.getElementById('mf-prev');
+  const btnNext = document.getElementById('mf-next');
+  const items   = document.querySelectorAll('.mf-stepper-item');
+  const lines   = document.querySelectorAll('.mf-stepper-line');
+
+  const STEP_RULES = {
+    1: { prenom: v => v.trim().length >= 2, nom: v => v.trim().length >= 2, email: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) },
+    2: { rue: v => v.trim().length >= 2, numero: v => v.trim().length >= 1, ville: v => v.trim().length >= 2 },
+    3: { situation: v => v !== '', volume: v => v !== '' },
+  };
+
+  function panel(n) { return form.querySelector(`[data-panel="${n}"]`); }
+
+  function updateStepper() {
+    items.forEach((it, i) => {
+      it.classList.toggle('active', i + 1 === step);
+      it.classList.toggle('done',   i + 1 <  step);
+    });
+    lines.forEach((ln, i) => ln.classList.toggle('done', i + 1 < step));
+  }
+
+  function showStep(n, dir) {
+    form.querySelectorAll('.mf-panel').forEach(p => p.classList.remove('active'));
+    card.dataset.dir = dir;
+    panel(n).classList.add('active');
+    updateStepper();
+    btnPrev.style.visibility = n === 1 ? 'hidden' : 'visible';
+    btnNext.style.display     = n === TOTAL ? 'none' : '';
+  }
+
+  function validateStep(n) {
+    const rules = STEP_RULES[n];
+    if (!rules) return true;
+    let ok = true;
+    Object.entries(rules).forEach(([name, rule]) => {
+      const el = panel(n).querySelector(`[name="${name}"]`);
+      if (!el) return;
+      const valid = rule(el.value);
+      const grp   = el.closest('.form-group');
+      if (grp) {
+        grp.classList.toggle('field-valid',   valid);
+        grp.classList.toggle('field-invalid', !valid);
+        const err = grp.querySelector('.field-error');
+        if (err) err.style.display = valid ? 'none' : 'block';
+      }
+      if (!valid) ok = false;
+    });
+    return ok;
+  }
+
+  btnNext.addEventListener('click', () => {
+    if (validateStep(step)) {
+      step++;
+      showStep(step, 'forward');
+      card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      card.classList.remove('mf-shake');
+      void card.offsetWidth;
+      card.classList.add('mf-shake');
+      setTimeout(() => card.classList.remove('mf-shake'), 400);
+    }
+  });
+
+  btnPrev.addEventListener('click', () => {
+    if (step > 1) { step--; showStep(step, 'back'); card.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  });
+
+  showStep(1, 'forward');
+})();
+</script>
+
+<!-- ══════════════════ FOOTER ══════════════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-bottom" style="border-top:1px solid rgba(255,255,255,.1); padding-top:28px;">
+      <a href="index.html" class="footer-logo">
+        <svg width="40" height="37" viewBox="0 0 58 54" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><path d="M29 7C25 3 11 2 4 6L4 48C11 44 25 45 29 49" stroke="#f5f0e8" stroke-width="1.8" fill="none" stroke-linecap="round"/><path d="M29 7C33 3 47 2 54 6L54 48C47 44 33 45 29 49" stroke="#c1440e" stroke-width="1.8" fill="none" stroke-linecap="round"/><line x1="11" y1="18" x2="25" y2="18" stroke="#f5f0e8" stroke-width="1" opacity="0.35"/><line x1="11" y1="25" x2="25" y2="25" stroke="#f5f0e8" stroke-width="1" opacity="0.35"/><line x1="11" y1="32" x2="25" y2="32" stroke="#f5f0e8" stroke-width="1" opacity="0.35"/><line x1="33" y1="18" x2="47" y2="18" stroke="#c1440e" stroke-width="1" opacity="0.5"/><line x1="33" y1="25" x2="47" y2="25" stroke="#c1440e" stroke-width="1" opacity="0.5"/><line x1="33" y1="32" x2="47" y2="32" stroke="#c1440e" stroke-width="1" opacity="0.5"/><line x1="29" y1="7" x2="29" y2="49" stroke="#f5f0e8" stroke-width="1" opacity="0.18"/></svg>
+        <div><div style="font-family:'Playfair Display',Georgia,serif;font-size:24px;font-weight:700;color:#f5f0e8;line-height:1;letter-spacing:-0.01em;">Next<em style="font-style:italic;color:#c1440e;">stop</em></div><div style="display:flex;align-items:center;gap:8px;margin-top:7px;"><div style="height:1px;width:18px;background:rgba(245,240,232,0.22);"></div><div style="font-size:8px;letter-spacing:0.5em;text-transform:uppercase;color:rgba(245,240,232,0.4);">Book · ASBL</div></div></div>
+      </a>
+      <p>© 2025 Nextstop Book ASBL · Bruxelles, Belgique</p>
+      <p style="font-size:.8rem; color:rgba(255,255,255,.45); max-width:480px; margin:8px auto 0; line-height:1.6;">Nextstop Book est une association à but non lucratif engagée pour l'économie circulaire du livre à Bruxelles et en Wallonie.</p>
+      <p><a href="index.html" style="color:rgba(255,255,255,.4); font-size:.8rem;">← Retour à l'accueil</a></p>
+    </div>
+  </div>
+</footer>
+
+<!-- Responsive info grid -->
+<style>
+  @media (max-width: 700px) {
+    .info-grid { grid-template-columns: 1fr !important; }
+  }
+</style>
+
+<!-- Scripts -->
+<script type="module">
+  import { initForm }            from './js/form.js';
+  import { initNav, initScrollReveal, initProgressBar, initPageTransition } from './js/animations.js';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    initNav();
+    initProgressBar();
+    initPageTransition();
+    initScrollReveal();
+    initForm();
+  });
+</script>
+</body>
+</html>

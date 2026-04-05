@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mon Certificat d'Impact — Nextstop Book</title>
+  <meta name="description" content="Retrouvez votre certificat d'impact personnalisé après votre collecte Nextstop Book." />
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+  <style>
+    /* ── Certificate page specific styles ───────────────────── */
+    .cert-page { padding-top: 74px; min-height: 100vh; background: var(--cream); }
+
+    /* ── Hero ────────────────────────────────────────────────── */
+    .cert-page-hero {
+      background: linear-gradient(160deg, var(--green-hero), var(--green));
+      padding: 64px 0 56px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .cert-page-hero::after {
+      content: '';
+      position: absolute;
+      bottom: -1px; left: 0; right: 0;
+      height: 48px;
+      background: var(--cream);
+      clip-path: ellipse(55% 100% at 50% 100%);
+      z-index: 2;
+    }
+    .cert-page-hero > .container { position: relative; z-index: 1; }
+    .cert-page-hero h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      color: var(--white);
+      margin-bottom: 12px;
+    }
+    .cert-page-hero p { color: rgba(255,255,255,.7); font-size: 1.05rem; max-width: 500px; margin: 0 auto; }
+
+    /* ── Search form ─────────────────────────────────────────── */
+    .cert-search-wrap {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+    .cert-search-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 40px 36px;
+      margin-top: -24px;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+    .cert-search-icon { font-size: 2.4rem; display: block; margin-bottom: 16px; }
+    .cert-search-card h2 {
+      font-family: var(--font-serif);
+      font-size: 1.4rem;
+      margin-bottom: 8px;
+    }
+    .cert-search-card p { font-size: .9rem; color: var(--text-light); margin-bottom: 28px; }
+    .cert-search-row { display: flex; gap: 12px; }
+    .cert-search-row input {
+      flex: 1;
+      padding: 13px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      font-family: var(--font-sans);
+      font-size: .95rem;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .cert-search-row input:focus {
+      border-color: var(--green-light);
+      box-shadow: 0 0 0 3px rgba(45,138,96,.12);
+    }
+    .cert-search-row .btn { white-space: nowrap; padding: 13px 22px; }
+
+    /* Loading / error states */
+    .cert-loading {
+      display: none;
+      text-align: center;
+      padding: 20px 0;
+      color: var(--text-light);
+      font-size: .9rem;
+    }
+    .cert-loading.visible { display: block; }
+    .cert-loading .spinner {
+      width: 24px; height: 24px;
+      border: 2px solid var(--border);
+      border-top-color: var(--green-mid);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      margin: 0 auto 10px;
+    }
+    .cert-not-found {
+      display: none;
+      background: #fff8f0;
+      border: 1px solid #f0d8c0;
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin-top: 20px;
+      font-size: .92rem;
+      color: var(--text-mid);
+      line-height: 1.6;
+      text-align: left;
+    }
+    .cert-not-found.visible { display: block; }
+    .cert-not-found strong { color: var(--accent); }
+
+    /* ── Certificate document ────────────────────────────────── */
+    #cert-display {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    .certificate {
+      background: var(--cream);
+      border: 2px solid var(--accent);
+      border-radius: 4px;
+      position: relative;
+      padding: 0;
+      box-shadow: var(--shadow-lg), inset 0 0 0 6px rgba(255,255,255,.8);
+      opacity: 0;
+      transform: scale(.97) translateY(16px);
+      transition: opacity .65s ease, transform .65s cubic-bezier(.17,.67,.3,1.05);
+    }
+    .certificate.cert-visible {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+
+    /* Corner ornaments */
+    .cert-corner {
+      position: absolute;
+      width: 24px; height: 24px;
+      border-color: var(--accent);
+      border-style: solid;
+      z-index: 2;
+    }
+    .cert-corner-tl { top: 8px;  left: 8px;  border-width: 2px 0 0 2px; }
+    .cert-corner-tr { top: 8px;  right: 8px; border-width: 2px 2px 0 0; }
+    .cert-corner-bl { bottom: 8px; left: 8px;  border-width: 0 0 2px 2px; }
+    .cert-corner-br { bottom: 8px; right: 8px; border-width: 0 2px 2px 0; }
+
+    /* Header */
+    .cert-header {
+      background: linear-gradient(135deg, var(--green-hero), var(--green-mid));
+      padding: 32px 40px 28px;
+      text-align: center;
+      border-radius: 2px 2px 0 0;
+    }
+    .cert-logo-line {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 6px;
+    }
+    .cert-logo-text {
+      font-family: var(--font-serif);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: .04em;
+    }
+    .cert-ornament { color: rgba(255,255,255,.4); font-size: 1.1rem; }
+    .cert-logo-sub { font-size: .75rem; color: rgba(255,255,255,.55); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 18px; }
+    .cert-header-rule {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .cert-header-rule::before,
+    .cert-header-rule::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(255,255,255,.25);
+    }
+    .cert-rule-diamond { color: var(--accent); font-size: .7rem; }
+    .cert-title {
+      font-family: var(--font-serif);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      margin: 0;
+    }
+
+    /* Body */
+    .cert-body { padding: 36px 48px; text-align: center; }
+    .cert-bestowed { font-style: italic; font-size: .95rem; color: var(--text-light); margin-bottom: 10px; }
+    .cert-name {
+      font-family: var(--font-serif);
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: var(--green);
+      line-height: 1.1;
+      margin-bottom: 10px;
+    }
+    .cert-date-line { font-size: .9rem; color: var(--text-light); margin-bottom: 32px; }
+    .cert-date-line strong { color: var(--text); }
+
+    /* Stats row */
+    .cert-stats-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 36px;
+    }
+    .cert-stat-box {
+      flex: 1;
+      max-width: 200px;
+      border-radius: var(--radius);
+      padding: 20px 16px;
+    }
+    .cert-stat-green { background: var(--green); }
+    .cert-stat-amber { background: var(--accent); }
+    .cert-stat-num {
+      font-family: var(--font-serif);
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .cert-stat-label { font-size: .82rem; color: rgba(255,255,255,.7); }
+    .cert-stat-sep { font-size: 1.5rem; color: var(--border-dark); }
+
+    /* Distribution */
+    .cert-dist-section { margin-bottom: 24px; }
+    .cert-dist-title {
+      font-family: var(--font-serif);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .cert-dist-title::before,
+    .cert-dist-title::after {
+      content: '';
+      flex: 1;
+      max-width: 80px;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* Stacked bar */
+    .cert-bar-track {
+      display: flex;
+      height: 14px;
+      border-radius: 100px;
+      overflow: hidden;
+      margin-bottom: 20px;
+      background: var(--cream-dark);
+    }
+    .cert-bar-assoc     { background: var(--green);       transition: width .8s ease .3s; }
+    .cert-bar-revente   { background: var(--accent);      transition: width .8s ease .5s; }
+    .cert-bar-recyclage { background: var(--green-light); transition: width .8s ease .7s; }
+
+    /* Dist blocks */
+    .cert-dist-blocks {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    .cert-dist-block {
+      border-radius: var(--radius);
+      padding: 18px 12px;
+      text-align: center;
+      transition: transform var(--transition);
+    }
+    .cert-dist-block:hover { transform: translateY(-2px); }
+    .cert-dist-block-assoc     { background: rgba(21,69,50,.07);  border: 1px solid rgba(21,69,50,.15); }
+    .cert-dist-block-revente   { background: rgba(184,89,0,.07);  border: 1px solid rgba(184,89,0,.15); }
+    .cert-dist-block-recyclage { background: rgba(45,138,96,.07); border: 1px solid rgba(45,138,96,.15); }
+    .cert-dist-pct {
+      font-family: var(--font-serif);
+      font-size: 1.8rem;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .cert-dist-block-assoc     .cert-dist-pct { color: var(--green); }
+    .cert-dist-block-revente   .cert-dist-pct { color: var(--accent); }
+    .cert-dist-block-recyclage .cert-dist-pct { color: var(--green-light); }
+    .cert-dist-icon { font-size: 1.3rem; margin-bottom: 4px; }
+    .cert-dist-lbl { font-size: .78rem; color: var(--text-light); line-height: 1.4; }
+
+    /* CO2 note */
+    .cert-co2-note {
+      background: var(--green-pale);
+      border: 1px solid rgba(21,69,50,.15);
+      border-radius: var(--radius);
+      padding: 12px 20px;
+      font-size: .88rem;
+      color: var(--green);
+      margin-bottom: 8px;
+    }
+
+    /* Footer */
+    .cert-footer { padding: 20px 48px 28px; text-align: center; }
+    .cert-footer-rule {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .cert-footer-rule::before,
+    .cert-footer-rule::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    .cert-seal { font-size: 1.8rem; color: var(--accent); margin-bottom: 8px; display: block; }
+    .cert-footer-text { font-size: .8rem; color: var(--text-light); line-height: 1.8; }
+    .cert-footer-text span { color: var(--border-dark); font-size: .75rem; }
+
+    /* Download button area */
+    .cert-download-area {
+      text-align: center;
+      margin-top: 28px;
+      padding-top: 24px;
+    }
+
+    /* ── State cards (états 0, 1, 2) ──────────────────────── */
+    .cert-state-card {
+      max-width: 560px;
+      margin: 0 auto 48px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 40px 36px;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+    .cert-state-icon { font-size: 3rem; display: block; margin-bottom: 16px; }
+    .cert-state-card h3 {
+      font-family: var(--font-serif);
+      font-size: 1.35rem;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+    .cert-state-card p { font-size: .95rem; color: var(--text-light); line-height: 1.7; }
+
+    /* État 1 — pending */
+    .cert-state-pending { border-top: 4px solid var(--green-light); }
+    .cert-state-pending h3 { color: var(--green); }
+
+    /* État 2 — processing */
+    .cert-state-processing { border-top: 4px solid var(--accent); }
+    .cert-state-processing h3 { color: var(--text); }
+
+    /* Not found (CAS 3) */
+    .cert-state-notfound { border-top: 4px solid var(--border-dark); }
+    .cert-notfound-block {
+      margin-top: 24px;
+      padding: 20px 22px;
+      border-radius: var(--radius);
+      text-align: left;
+    }
+    .cert-notfound-cta {
+      background: var(--green-pale);
+      border: 1px solid rgba(21,69,50,.15);
+    }
+    .cert-notfound-cta p { color: var(--green); font-size: .95rem; line-height: 1.6; }
+    .cert-notfound-support {
+      background: var(--cream);
+      border: 1px solid var(--border);
+      margin-top: 14px;
+    }
+    .cert-notfound-support p { color: var(--text-light); line-height: 1.6; }
+
+    /* Partial stats (état 2) */
+    .cert-partial-stats {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      margin: 24px 0 12px;
+    }
+    .cert-partial-stat {
+      flex: 1;
+      max-width: 160px;
+      border-radius: var(--radius);
+      padding: 16px 12px;
+    }
+    .cert-partial-green { background: var(--green); }
+    .cert-partial-amber { background: var(--accent); }
+    .cert-partial-num {
+      font-family: var(--font-serif);
+      font-size: 1.7rem;
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1;
+      margin-bottom: 5px;
+    }
+    .cert-partial-lbl { font-size: .78rem; color: rgba(255,255,255,.75); }
+    .cert-partial-date { font-size: .85rem; color: var(--text-light); margin-bottom: 20px; }
+
+    /* Animated progress bar (état 2) */
+    .cert-processing-bar-wrap {
+      margin: 20px 0 8px;
+      text-align: left;
+    }
+    .cert-processing-label {
+      font-size: .8rem;
+      color: var(--text-light);
+      margin-bottom: 8px;
+    }
+    .cert-processing-bar {
+      height: 6px;
+      background: var(--cream-dark);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+    .cert-processing-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--green-light), var(--accent));
+      border-radius: 100px;
+      animation: processing-anim 2.4s ease-in-out infinite;
+    }
+    @keyframes processing-anim {
+      0%   { width: 0%;   margin-left: 0%; }
+      50%  { width: 60%;  margin-left: 20%; }
+      100% { width: 0%;   margin-left: 100%; }
+    }
+
+    /* Steps tracker */
+    .cert-pending-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 24px;
+      text-align: left;
+      max-width: 320px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .cert-step {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: .9rem;
+    }
+    .cert-step-done  { color: var(--text); }
+    .cert-step-waiting { color: var(--text-light); }
+    .cert-step-dot {
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      background: var(--green);
+      color: var(--white);
+      font-size: .75rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .cert-step-dot-empty {
+      background: var(--cream-dark);
+      border: 2px solid var(--border);
+    }
+    .cert-step-dot-pulse {
+      background: var(--accent);
+      animation: dot-pulse 1.5s ease-in-out infinite;
+    }
+    @keyframes dot-pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: .6; transform: scale(.85); }
+    }
+
+    /* Info note below search */
+    .cert-info-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      background: var(--green-pale);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      margin-top: 20px;
+      font-size: .84rem;
+      color: var(--green);
+      text-align: left;
+    }
+
+    /* ── Photo de collecte — effet polaroïd ─────────────── */
+    .cert-photo-section {
+      margin: 28px auto 24px;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+    }
+    .cert-photo-polaroid {
+      background: #fff;
+      padding: 10px 10px 32px;
+      box-shadow: 0 6px 24px rgba(0,0,0,.18), 0 2px 6px rgba(0,0,0,.10);
+      border-radius: 3px;
+      display: inline-block;
+      transform: rotate(-1deg);
+      animation: fadeInPhoto .7s ease .3s both;
+      max-width: 320px;
+      width: 100%;
+    }
+    .cert-photo-img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      border-radius: 2px;
+      display: block;
+    }
+    .cert-photo-caption {
+      font-size: .78rem;
+      color: #666;
+      margin-top: 8px;
+      font-style: italic;
+      font-family: 'Playfair Display', Georgia, serif;
+      line-height: 1.3;
+    }
+    @keyframes fadeInPhoto {
+      from { opacity: 0; transform: rotate(-1deg) scale(.94) translateY(10px); }
+      to   { opacity: 1; transform: rotate(-1deg) scale(1)   translateY(0); }
+    }
+    .cert-assoc-impact {
+      text-align: center;
+      font-size: 1rem;
+      color: var(--dark-green);
+      background: rgba(74,103,65,.08);
+      border-radius: 10px;
+      padding: 10px 18px;
+      margin: 18px 0 4px;
+    }
+
+    /* Mobile */
+    @media (max-width: 600px) {
+      .cert-body { padding: 28px 24px; }
+      .cert-footer { padding: 16px 24px 24px; }
+      .cert-header { padding: 24px 24px 20px; }
+      .cert-name { font-size: 1.8rem; }
+      .cert-stats-row { flex-direction: column; gap: 12px; }
+      .cert-stat-box { max-width: 100%; }
+      .cert-stat-sep { display: none; }
+      .cert-dist-blocks { grid-template-columns: 1fr; }
+      .cert-search-row { flex-direction: column; }
+      .cert-search-row .btn { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body class="cert-page">
+
+<!-- ══════════════════ NAV ══════════════════ -->
+<nav id="main-nav" role="navigation" aria-label="Navigation principale">
+  <div class="container">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <svg width="46" height="42" viewBox="0 0 58 54" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><path d="M29 7C25 3 11 2 4 6L4 48C11 44 25 45 29 49" stroke="#f5f0e8" stroke-width="1.8" fill="none" stroke-linecap="round"/><path d="M29 7C33 3 47 2 54 6L54 48C47 44 33 45 29 49" stroke="#c1440e" stroke-width="1.8" fill="none" stroke-linecap="round"/><line x1="11" y1="18" x2="25" y2="18" stroke="#f5f0e8" stroke-width="1" opacity="0.35"/><line x1="11" y1="25" x2="25" y2="25" stroke="#f5f0e8" stroke-width="1" opacity="0.35"/><line x1="11" y1="32" x2="25" y2="32" stroke="#f5f0e8" stroke-width="1" opacity="0.35"/><line x1="33" y1="18" x2="47" y2="18" stroke="#c1440e" stroke-width="1" opacity="0.5"/><line x1="33" y1="25" x2="47" y2="25" stroke="#c1440e" stroke-width="1" opacity="0.5"/><line x1="33" y1="32" x2="47" y2="32" stroke="#c1440e" stroke-width="1" opacity="0.5"/><line x1="29" y1="7" x2="29" y2="49" stroke="#f5f0e8" stroke-width="1" opacity="0.18"/></svg>
+        <div><div style="font-family:'Playfair Display',Georgia,serif;font-size:23px;font-weight:700;color:#f5f0e8;line-height:1;letter-spacing:-0.01em;">Next<em style="font-style:italic;color:#c1440e;">stop</em></div><div style="display:flex;align-items:center;gap:7px;margin-top:6px;"><div style="height:1px;width:16px;background:rgba(245,240,232,0.25);"></div><div style="font-size:8px;letter-spacing:0.5em;text-transform:uppercase;color:rgba(245,240,232,0.45);">Book · ASBL</div></div></div>
+      </a>
+      <ul class="nav-links" role="list">
+        <li><a href="index.html#how">Comment ça marche</a></li>
+        <li><a href="index.html#impact">Notre impact</a></li>
+        <li><a href="certificat.html" style="color:var(--white); font-weight:600;">Mon Certificat</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="precommande.html" class="btn btn-outline">Précommander</a>
+      </div>
+      <button class="nav-burger" id="nav-burger" aria-expanded="false" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile menu -->
+<div id="mobile-menu" role="dialog" aria-label="Menu mobile">
+  <a href="index.html#how">Comment ça marche</a>
+  <a href="index.html#impact">Notre impact</a>
+  <a href="certificat.html">Mon Certificat</a>
+  <a href="precommande.html" class="btn btn-accent">Précommander →</a>
+</div>
+
+<!-- ══════════════════ HERO ══════════════════ -->
+<div class="cert-page-hero">
+  <div class="container">
+    <p class="section-tag" style="color:rgba(255,255,255,.5)">Impact personnalisé</p>
+    <h1>Mon Certificat d'Impact</h1>
+    <p>Retrouvez votre certificat en entrant l'adresse email utilisée lors de votre collecte.</p>
+  </div>
+</div>
+
+<!-- ══════════════════ SEARCH ══════════════════ -->
+<div class="cert-search-wrap">
+  <div class="cert-search-card" data-reveal>
+    <span class="cert-search-icon">🏅</span>
+    <h2>Accéder à mon certificat</h2>
+    <p>Entrez l'email avec lequel vous avez fait appel à nos services.</p>
+
+    <div class="cert-search-row">
+      <input
+        type="email"
+        id="cert-email-input"
+        placeholder="votre@email.be"
+        autocomplete="email"
+      />
+      <button class="btn btn-primary" id="btn-lookup">Voir →</button>
+    </div>
+
+    <!-- Loading -->
+    <div class="cert-loading" id="cert-loading">
+      <div class="spinner"></div>
+      Recherche en cours…
+    </div>
+
+    <div class="cert-info-note">
+      <span>ℹ️</span>
+      <span>Utilisez l'email avec lequel vous avez fait votre précommande. Le certificat complet est disponible après la collecte.</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ CERTIFICATE ══════════════════ -->
+<div id="cert-display"></div>
+
+<!-- ══════════════════ FOOTER ══════════════════ -->
+<footer style="margin-top: 0;">
+  <div class="container">
+    <div class="footer-bottom" style="border-top:1px solid rgba(255,255,255,.1); padding-top:28px;">
+      <a href="index.html" class="footer-logo">
+        <svg width="40" height="37" viewBox="0 0 58 54" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><path d="M29 7C25 3 11 2 4 6L4 48C11 44 25 45 29 49" stroke="#f5f0e8" stroke-width="1.8" fill="none" stroke-linecap="round"/><path d="M29 7C33 3 47 2 54 6L54 48C47 44 33 45 29 49" stroke="#c1440e" stroke-width="1.8" fill="none" stroke-linecap="round"/><line x1="11" y1="18" x2="25" y2="18" stroke="#f5f0e8" stroke-width="1" opacity="0.35"/><line x1="11" y1="25" x2="25" y2="25" stroke="#f5f0e8" stroke-width="1" opacity="0.35"/><line x1="11" y1="32" x2="25" y2="32" stroke="#f5f0e8" stroke-width="1" opacity="0.35"/><line x1="33" y1="18" x2="47" y2="18" stroke="#c1440e" stroke-width="1" opacity="0.5"/><line x1="33" y1="25" x2="47" y2="25" stroke="#c1440e" stroke-width="1" opacity="0.5"/><line x1="33" y1="32" x2="47" y2="32" stroke="#c1440e" stroke-width="1" opacity="0.5"/><line x1="29" y1="7" x2="29" y2="49" stroke="#f5f0e8" stroke-width="1" opacity="0.18"/></svg>
+        <div><div style="font-family:'Playfair Display',Georgia,serif;font-size:24px;font-weight:700;color:#f5f0e8;line-height:1;letter-spacing:-0.01em;">Next<em style="font-style:italic;color:#c1440e;">stop</em></div><div style="display:flex;align-items:center;gap:8px;margin-top:7px;"><div style="height:1px;width:18px;background:rgba(245,240,232,0.22);"></div><div style="font-size:8px;letter-spacing:0.5em;text-transform:uppercase;color:rgba(245,240,232,0.4);">Book · ASBL</div></div></div>
+      </a>
+      <p>© 2025 Nextstop Book ASBL · Bruxelles, Belgique</p>
+      <p style="font-size:.8rem; color:rgba(255,255,255,.45); max-width:480px; margin:8px auto 0; line-height:1.6;">Nextstop Book est une association à but non lucratif engagée pour l'économie circulaire du livre à Bruxelles et en Wallonie.</p>
+      <p><a href="index.html" style="color:rgba(255,255,255,.4); font-size:.8rem;">← Retour à l'accueil</a></p>
+    </div>
+  </div>
+</footer>
+
+<!-- Scripts -->
+<script type="module">
+  import {
+    lookupCertificat, lookupPrecommande,
+    renderCertificat, renderFoundInPrecommandes, renderNotFound,
+  } from './js/certificat.js';
+  import { initNav, initScrollReveal, initProgressBar, initPageTransition } from './js/animations.js';
+
+  // Safety net — ensure body is visible even if DOMContentLoaded timing varies
+  document.body.classList.add('page-loaded');
+
+  document.addEventListener('DOMContentLoaded', () => {
+    initNav();
+    initProgressBar();
+    initPageTransition();
+    initScrollReveal();
+  });
+
+  const input     = document.getElementById('cert-email-input');
+  const btnLookup = document.getElementById('btn-lookup');
+  const loading   = document.getElementById('cert-loading');
+  const display   = document.getElementById('cert-display');
+
+  async function doLookup() {
+    const email = input.value.trim();
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      input.style.borderColor = '#d32f2f';
+      input.focus();
+      return;
+    }
+    input.style.borderColor = '';
+
+    loading.classList.add('visible');
+    display.innerHTML = '';
+    btnLookup.disabled = true;
+
+    // Étape 1 — cherche dans certificats
+    const cert = await lookupCertificat(email);
+
+    if (cert) {
+      // CAS 1 — trouvé dans certificats
+      loading.classList.remove('visible');
+      btnLookup.disabled = false;
+      renderCertificat(cert);
+    } else {
+      // Étape 2 — cherche dans precommandes
+      const precom = await lookupPrecommande(email);
+      loading.classList.remove('visible');
+      btnLookup.disabled = false;
+
+      if (precom) {
+        // CAS 2 — trouvé dans precommandes seulement
+        renderFoundInPrecommandes(precom);
+      } else {
+        // CAS 3 — email inconnu
+        renderNotFound();
+      }
+    }
+
+    setTimeout(() => {
+      display.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 150);
+  }
+
+  btnLookup.addEventListener('click', doLookup);
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') doLookup(); });
+</script>
+</body>
+</html>
